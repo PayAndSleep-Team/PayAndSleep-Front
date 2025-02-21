@@ -4,8 +4,10 @@
     const Api_url = "http://localhost:3000";
     let lst = [];
     let message = $state("loading...");
-    let username = $state("");
     let email = $state("");
+    let name = $state("");
+    let phone = $state("");
+    let role = $state("");
     let password = $state("");
     let confirm_password = $state("");
 
@@ -14,10 +16,11 @@
             alert("Password and Confirm Password not match");
             return;
         }
-        if (username === "" || email === "" || password === "" || confirm_password === "") {
+        if (email === "" || password === "" || confirm_password === "" || role === "" || name === "" || phone === "") {
             alert("Please fill all fields");
             return;
         }
+        console.log(email, password, role, name, phone);
         try {
             const res = await fetch(`${Api_url}/api/register`, {
                 method: "POST",
@@ -25,9 +28,11 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    username: username,
                     email: email,
-                    password: password
+                    password: password,
+                    role: role,
+                    name: name,
+                    phone: phone
                 }),
             });
             const data = await res.json();
@@ -49,12 +54,23 @@
         <h1 class="text-2xl font-bold text-center">Register</h1>
         <form class="mt-4">
             <div class="mb-4">
-                <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                <input type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={username} />
-            </div>
-            <div class="mb-4">
                 <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                 <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={email} />
+            </div>
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={name} />
+            </div>
+            <div class="mb-4">
+                <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
+                <input type="text" id="phone" name="phone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={phone} />
+            </div>
+            <div class="mb-4">
+                <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+                <select id="role" name="role" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={role}>
+                    <option value="host">Host</option>
+                    <option value="tenant">Tenant</option>
+                </select>
             </div>
             <div class="mb-4">
                 <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>

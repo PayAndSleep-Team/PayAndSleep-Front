@@ -3,7 +3,8 @@
     const Api_url = "http://localhost:3000";
     let message = $state("loading...");
     let user = $state({});
-    import { onMount } from "svelte";
+    let profile = $state({});
+    import { onMount } from "svelte"; 
 
     onMount(async () => {
         try {
@@ -12,6 +13,7 @@
                 credentials: "include",
             });
             user = await res.json();
+            profile = user.profile;
             console.log($state.snapshot(user));
             if (user.message === "ไม่ได้เข้าสู่ระบบ") {
                 goto("/login");
@@ -58,11 +60,15 @@
         <div class="mt-4">
             <div class="mb-4">
                 <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username</label>
-                <p type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{user.name}</p>
+                <p type="text" id="username" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{profile.name}</p>
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                 <p type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{user.email}</p>
+            </div>
+            <div class="mb-4">
+                <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role</label>
+                <p type="text" id="role" name="role" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{user.role}</p>
             </div>
             <div class="flex justify-end items-center">
                 <button class="bg-red-500 text-white p-2 rounded-xl" onclick={logout}> logout </button>
