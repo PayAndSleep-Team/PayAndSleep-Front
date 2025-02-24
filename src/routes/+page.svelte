@@ -18,6 +18,9 @@
             if (user.message === "ไม่ได้เข้าสู่ระบบ") {
                 goto("/login");
             }
+            if (user.role === "host") {
+                window.location.href = 'http://localhost:3000/api/host/property';
+            }
         } catch (error) {
             console.error("Error fetching message:", error);
             message = "Failed to load message";
