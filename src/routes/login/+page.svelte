@@ -1,102 +1,96 @@
 <script>
     import { goto } from "$app/navigation";
-
+  
     const Api_url = "http://localhost:3000";
     let email = "";
     let password = "";
     let check = false;
-
-    async function login() {
-        try {
-            const res = await fetch(`${Api_url}/api/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-                credentials: "include",
-            });
-            const data = await res.json();
-            alert(data.message);
-
-            if (data.message === "เข้าสู่ระบบสำเร็จ") {
-                goto("/");
-            }
-        } catch (error) {
-            console.error("Error fetching message:", error);
-            message = "Failed to load message";
+  
+    async function login(event) {
+      event.preventDefault();
+      try {
+        const res = await fetch(`${Api_url}/api/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
+        });
+        const data = await res.json();
+        alert(data.message);
+  
+        if (data.message === "เข้าสู่ระบบสำเร็จ") {
+          goto("/");
         }
+      } catch (error) {
+        console.error("Error fetching message:", error);
+        alert("Failed to load message");
+      }
     }
-
+  
     const showPopup = () => {
-        check = true;
+      check = true;
     };
-</script>
-
-<div class="w-full h-screen flex flex-col items-center justify-center">
+  </script>
+  
+  <style>
+    @font-face {
+      font-family: 'JejuGothic';
+      src: url('/fonts/JejuGothic-Regular.ttf') format('truetype');
+    }
+  </style>
+  
+  <div class="bg-cover bg-center bg-no-repeat w-screen h-screen flex justify-end items-center pr-[5%]" style="background-image: url('/images/bg.png');">
     {#if !check}
-        <div class="w-96 bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-2xl font-bold text-center">Login</h1>
-            <form class="mt-4">
-                <div class="mb-4">
-                    <label
-                        for="email"
-                        class="block text-sm font-medium text-gray-700"
-                        >Email</label
-                    >
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        bind:value={email}
-                    />
-                </div>
-                <div class="mb-4">
-                    <label
-                        for="password"
-                        class="block text-sm font-medium text-gray-700"
-                        >Password</label
-                    >
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        bind:value={password}
-                    />
-                </div>
-                <div class="flex justify-between items-center">
-                    <button
-                        type="submit"
-                        class="bg-indigo-500 text-white px-4 py-2 rounded-md"
-                        onclick={login}>Login</button
-                    >
-                    <button class="text-indigo-500" onclick="{showPopup}">
-                        Sign up
-                    </button>
-                </div>
-            </form>
-        </div>
+      <div class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-[45%] h-[95%] shadow-lg flex flex-col items-center justify-center">
+        <h1 class="text-[#404040] text-center font-jeju text-4xl font-normal mb-9">เข้าสู่ระบบ</h1>
+        <form on:submit={login} class="w-[90%] max-w-[550px] min-w-[400px]">
+          <div class="mb-4">
+            <input
+              type="email"
+              id="email"
+              placeholder="อีเมล"
+              bind:value={email}
+              required
+              class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-lg text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+            />
+          </div>
+          <div class="mb-4">
+            <input
+              type="password"
+              id="password"
+              placeholder="รหัสผ่าน"
+              bind:value={password}
+              required
+              class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-lg text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+            />
+          </div>
+          <button type="submit" class="w-full py-3 rounded-[25px] text-xl cursor-pointer mt-2.5 bg-[#404040] text-white border-none text-[#D9D9D9">
+            เข้าสู่ระบบ
+          </button>
+          <button type="button" on:click={showPopup} class="w-full py-3 rounded-[25px] text-xl cursor-pointer mt-2.5 bg-transparent text-[#404040] border-none">
+            ลงทะเบียน
+          </button>
+        </form>
+      </div>
     {:else}
-    <!-- ask Are u host or tenant -->
-        <div class="w-96 bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-2xl font-bold text-center">คุณต้องการลงทะเบียนในสถานะใด</h1>
-            <div class="flex justify-between items-center">
-                <button
-                    type="submit"
-                    class="bg-indigo-500 text-white px-4 py-2 rounded-md"
-                    onclick={() => goto("/register?role=host")}>Host</button
-                >
-                <button
-                    type="submit"
-                    class="bg-indigo-500 text-white px-4 py-2 rounded-md"
-                    onclick={() => goto("/register?role=tenant")}>Tenant</button
-                >
-            </div>
+      <div class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-[45%] h-[95%] shadow-lg flex flex-col items-center justify-center">
+        <h1 class="text-[#404040] text-center font-jeju text-4xl font-normal mb-20">ต้องการลงทะเบียนในสถานะใด</h1>
+        <div class="grid grid-cols-2 gap-12">
+          <button
+            on:click={() => goto("/register?role=host")}
+            class="w-full py-3 px-20 rounded-[25px] text-xl cursor-pointer bg-[#404040] text-white border-none text-[#D9D9D9]"
+          >
+            Host
+          </button>
+          <button
+            on:click={() => goto("/register?role=tenant")}
+            class="w-full py-3 rounded-[25px] text-xl cursor-pointer bg-[#404040] text-white border-none text-[#D9D9D9]"
+          >
+            Tenant
+          </button>
         </div>
+      </div>
     {/if}
-</div>
+  </div>
