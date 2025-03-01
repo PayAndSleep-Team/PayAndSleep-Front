@@ -3,7 +3,6 @@
     import { page } from '$app/stores';
   
     let role = $page.url.searchParams.get('role');
-    console.log(role);
   
     const Api_url = "http://localhost:3000";
     let lst = [];
@@ -16,11 +15,11 @@
   
     async function register() {
       if (password !== confirm_password) {
-        alert("Password and Confirm Password do not match");
+        alert("รหัสผ่านไม่ตรงกัน");
         return;
       }
       if (email === "" || password === "" || confirm_password === "" || role === "" || name === "" || phone === "") {
-        alert("Please fill all fields");
+        alert("กรุณากรอกข้อมูลให้ครบ");
         return;
       }
       console.log(email, password, role, name, phone);
@@ -42,7 +41,7 @@
         alert(data.message);
   
         if (data.message === "ลงทะเบียนสำเร็จ") {
-          goto("/login");
+          goto("/landing/login");
         }
       } catch (error) {
         console.error("Error fetching message:", error);
@@ -109,7 +108,7 @@
       </div>
       <button
         type="button"
-        on:click={register}
+        onclick={register}
         class="w-full py-3 mt-9 rounded-[25px] text-xl cursor-pointer bg-[#404040] border-none text-[#D9D9D9]"
       >
         ลงทะเบียน
