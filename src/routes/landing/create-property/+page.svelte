@@ -46,60 +46,111 @@
 
 <div class="w-full h-screen flex flex-col items-center justify-center">
     <!-- create property -->
-    <div class="w-1/3 bg-white p-8 rounded-lg shadow-lg">
-        <h1 class="text-2xl font-bold text-center">Create Property</h1>
-        <form class="mt-4">
-            <div class="mb-4">
-                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
-                <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={name} />
-            </div>
-            <!-- address -->
-            <div class="mb-4">
-                <label for="address" class="block text-gray-700 text-sm font-bold mb-2">Address</label>
-                <textarea id="address" name="address" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={address}></textarea>
-            </div>
-            <!-- water rate -->
-            <div class="mb-4">
-                <label for="water_rate" class="block text-gray-700 text-sm font-bold mb-2">Water Rate</label>
-                <input type="number" id="water_rate" name="water_rate" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={water_rate} />
-            </div>
-            <!-- electric rate -->
-            <div class="mb-4">
-                <label for="electricity_rate" class="block text-gray-700 text-sm font-bold mb-2">Electric Rate</label>
-                <input type="number" id="electricity_rate" name="electricity_rate" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={electricity_rate} />
-            </div>
-            <!-- bank name -->
-            <div class="mb-4">
-                <label for="bank_name" class="block text-gray-700 text-sm font-bold mb-2">Bank Name</label>
-                <select id="bank_name" name="bank_name" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={bank_name}>
-                    <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
-                    <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
-                    <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
-                    <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
-                    <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
-                    <option value="ธนาคารยูโอบี">ธนาคารยูโอบี</option>
-                </select>
-            </div>
-            <!-- bank account number -->
-            <div class="mb-4">
-                <label for="bank_account_number" class="block text-gray-700 text-sm font-bold mb-2">Bank Account Number</label>
-                <input type="text" id="bank_account_number" name="bank_account_number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={bank_account_number} />
-            </div>
-            <!-- account holder name -->
-            <div class="mb-4">
-                <label for="account_holder_name" class="block text-gray-700 text-sm font-bold mb-2">Account Holder Name</label>
-                <input type="text" id="account_holder_name" name="account_holder_name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={account_holder_name} />
-            </div>
-            <!-- promptpay number -->
-            <div class="mb-4">
-                <label for="promptpay_number" class="block text-gray-700 text-sm font-bold mb-2">Promptpay Number</label>
-                <input type="text" id="promptpay_number" name="promptpay_number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={promptpay_number} />
-            </div>
-            <!-- create property button -->
-            <div class="flex justify-between items-center">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onclick={() => createProperty()}>Create Property</button>
-                <a href="/" class="text-indigo-500">Back</a>
-            </div>
-        </form>
+    <div class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-[45%] h-[95%] shadow-lg flex flex-col items-center justify-center">
+      <h1 class="text-[#404040] text-center font-jeju text-4xl font-normal mb-9">สร้างที่พัก</h1>
+      <form class="w-[90%] max-w-[550px] min-w-[400px] mt-4">
+        <!-- Name -->
+        <div class="mb-4">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="ชื่อ"
+            bind:value={name}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- Address -->
+        <div class="mb-4">
+          <textarea
+            id="address"
+            name="address"
+            placeholder="ที่อยู่"
+            rows="4"
+            bind:value={address}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          ></textarea>
+        </div>
+        <!-- Water Rate -->
+        <div class="mb-4">
+          <input
+            type="number"
+            id="water_rate"
+            name="water_rate"
+            placeholder="เรทค่าน้ำ"
+            bind:value={water_rate}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- Electricity Rate -->
+        <div class="mb-4">
+          <input
+            type="number"
+            id="electricity_rate"
+            name="electricity_rate"
+            placeholder="เรทค่าไฟ"
+            bind:value={electricity_rate}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- Bank Name -->
+        <div class="mb-4">
+          <select
+            id="bank_name"
+            name="bank_name"
+            bind:value={bank_name}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          >
+            <option value="" disabled selected>ธนาคาร</option>
+            <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+            <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+            <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+            <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+            <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
+            <option value="ธนาคารยูโอบี">ธนาคารยูโอบี</option>
+          </select>
+        </div>
+        <!-- Bank Account Number -->
+        <div class="mb-4">
+          <input
+            type="text"
+            id="bank_account_number"
+            name="bank_account_number"
+            placeholder="เลขบัญชีธนาคาร"
+            bind:value={bank_account_number}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- Account Holder Name -->
+        <div class="mb-4">
+          <input
+            type="text"
+            id="account_holder_name"
+            name="account_holder_name"
+            placeholder="ชื่อบัญชีธนาคาร"
+            bind:value={account_holder_name}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- PromptPay Number -->
+        <div class="mb-4">
+          <input
+            type="text"
+            id="promptpay_number"
+            name="promptpay_number"
+            placeholder="หมายเลขพร้อมเพย์"
+            bind:value={promptpay_number}
+            class="w-full py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
+          />
+        </div>
+        <!-- Create Property Button -->
+        <button
+          type="button"
+          on:click={createProperty}
+          class="w-full py-3 mt-9 rounded-[25px] text-xl cursor-pointer bg-[#404040] border-none text-[#D9D9D9]"
+        >
+          สร้างที่พัก
+        </button>
+      </form>
     </div>
-</div>
+  </div>
