@@ -1,5 +1,9 @@
 <script>
     import { goto } from "$app/navigation";
+    import { page } from '$app/stores';
+
+    let role = $page.url.searchParams.get('role');
+    console.log(role);
 
     const Api_url = "http://localhost:3000";
     let lst = [];
@@ -7,7 +11,6 @@
     let email = $state("");
     let name = $state("");
     let phone = $state("");
-    let role = $state("");
     let password = $state("");
     let confirm_password = $state("");
 
@@ -49,7 +52,6 @@
 </script>
 
 <div class="w-full h-screen flex flex-col items-center justify-center">
-    <!-- register form -->
     <div class="w-1/3 bg-white p-8 rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-center">Register</h1>
         <form class="mt-4">
@@ -64,13 +66,6 @@
             <div class="mb-4">
                 <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone</label>
                 <input type="text" id="phone" name="phone" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={phone} />
-            </div>
-            <div class="mb-4">
-                <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role</label>
-                <select id="role" name="role" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" bind:value={role}>
-                    <option value="host">Host</option>
-                    <option value="tenant">Tenant</option>
-                </select>
             </div>
             <div class="mb-4">
                 <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>

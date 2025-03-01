@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import { goto } from "$app/navigation";
     const Api_url = "http://localhost:3000";
     let message = $state("loading...");
@@ -16,7 +16,7 @@
             profile = user.profile;
             console.log($state.snapshot(user));
             if (user.message === "ไม่ได้เข้าสู่ระบบ") {
-                goto("/landing/login");
+                goto("/login");
             }
             if (user.role === "host") {
                 window.location.href = 'http://localhost:3000/api/host/property';
@@ -81,9 +81,4 @@
             </div>
         </div>
     </div>
-    <!-- <button onclick={click}>click</button>
-    <a href="{Api_url}/api/eiei">eiei</a>
-    <p>{message}</p>
-    <h1>Hello {user.name}</h1>
-    <button class="bg-red-400 p-2 rounded-full" onclick={logout}> logout </button> -->
-</div>
+</div> -->
