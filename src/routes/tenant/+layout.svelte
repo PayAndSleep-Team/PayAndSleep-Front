@@ -35,15 +35,13 @@
     </div>
   </div>
 
-  <div
-    id="rest"
-    class="flex-1 bg-[#F2F2F2] bg-opacity-[0.85] m-5 p-4 rounded-2xl pl-[200px]"
-  >
+</div>
+
+<div class="flex flex-col items-end justify-center h-screen ml-10 mr-5">
+  <div class="rounded-2xl w-[85%] h-[95%] text-white">
     {@render children()}
   </div>
 </div>
-
-
 
 <style>
   .sidebar {
