@@ -4,9 +4,6 @@ export default {
 
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['JejuGothic', 'sans-serif']
-      }
     }
   },
 
