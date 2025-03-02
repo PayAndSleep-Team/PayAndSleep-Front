@@ -3,9 +3,9 @@
   let { children } = $props();
 </script>
 
-<div class="flex min-h-screen absolute">
+<div class="flex min-h-screen">
   <div
-    class="sidebar bg-[#404040] text-white py-8 m-5 flex flex-col rounded-2xl items-center justify-center w-1/12 "
+    class="sidebar bg-[#404040] text-white py-8 my-5 mx-4 flex flex-col rounded-2xl items-center justify-center w-[12%] "
   >
     <div>
       <div class="flex flex-col items-center mb-4">
@@ -37,7 +37,7 @@
 
   <div
     id="rest"
-    class="flex-1 bg-[#F2F2F2] bg-opacity-[0.85] m-5 p-4 rounded-2xl pl-[200px]"
+    class="flex-1 my-5"
   >
     {@render children()}
   </div>
