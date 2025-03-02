@@ -43,8 +43,6 @@
   </div>
 </div>
 
-
-
 <style>
   .sidebar {
     min-width: 12rem;
