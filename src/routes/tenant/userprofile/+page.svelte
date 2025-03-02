@@ -13,8 +13,8 @@
     ];
 </script>
 
-<div class="w-full min-h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/images/bg.png');">
-    <div class="w-full h-screen flex flex-col items-center justify-center">
+<div class="w-full min-h-full">
+    <div class="w-full h-full flex flex-col items-center justify-center">
         <div class="w-[85%] h-[90%] pt-16 flex flex-col items-center px-10">
             <img src="/images/Icon.svg" alt="icon" class="mb-6 w-24 h-24 fill-[#F2F2F2]" />
             <p class="text-[#F2F2F2] font-normal font-jeju text-4xl">{name}</p>

@@ -3,7 +3,7 @@
     let { data } = $props();
 </script>
 
-<div class="w-full h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center p-6" style="background-image: url('/images/bg.png');">
+<div class="w-full h-full flex items-center justify-center p-6">
     <div class="w-[90%] h-[90%] p-10 flex flex-col">
         <div class="w-full text-left mb-6">
             <p class="text-[#F2F2F2] text-2xl font-semibold">
