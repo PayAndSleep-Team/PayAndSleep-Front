@@ -34,9 +34,16 @@
       </div>
     </div>
   </div>
+
+  <div
+    id="rest"
+    class="flex-1 bg-[#F2F2F2] bg-opacity-[0.85] m-5 p-4 rounded-2xl pl-[200px]"
+  >
+    {@render children()}
+  </div>
 </div>
 
-{@render children()}
+
 
 <style>
   .sidebar {
