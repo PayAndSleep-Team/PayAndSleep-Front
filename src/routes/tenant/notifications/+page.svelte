@@ -1,14 +1,23 @@
 <script>
+    import { onMount } from 'svelte';
+
     /** @type {{ data: import('./$types').PageData }} */
     let { data } = $props();
 
-    let notifications = [
-        "เลยกำหนดการชำระค่าเช่าแล้วเฮ้ยยยยยยยย จ่ายด่วยยยยยยยยยยยยยยยยยยยย",
-        "เลยกำหนดการชำระค่าเช่าแล้วเฮ้ยยยยยยยย จ่ายด่วยยยยยยยยยยยยยยยยยยยย",
-        "เลยกำหนดการชำระค่าเช่าแล้วเฮ้ยยยยยยยย จ่ายด่วยยยยยยยยยยยยยยยยยยยย",
-        "เลยกำหนดการชำระค่าเช่าแล้วเฮ้ยยยยยยยย จ่ายด่วยยยยยยยยยยยยยยยยยยยย",
-        "เลยกำหนดการชำระค่าเช่าแล้วเฮ้ยยยยยยยย จ่ายด่วยยยยยยยยยยยยยยยยยยยย"
-    ];
+    let notifications = $state([]);
+
+    onMount(async () => {
+        try {
+            const res = await fetch(`http://localhost:3000/api/get/notifications`, {
+                method: "GET",
+                credentials: "include",
+            });
+            notifications = await res.json();
+        } catch (error) {
+            console.error("Error fetching message:", error);
+            notifications = ["Failed to load notifications"];
+        }
+    });
 </script>
 
 <div class="">
@@ -20,7 +29,7 @@
         {#each notifications as notification}
             <div class="flex items-center bg-[#D9D9D9] rounded-lg shadow-md p-4">
                 <img src="/images/bell.svg" alt="bell" class="w-8 h-8 mr-4" />
-                <p class="text-lg text-[#404040]">{notification}</p>
+                <p class="text-lg text-[#404040]">{notification.message}</p>
             </div>
         {/each}
     </div>

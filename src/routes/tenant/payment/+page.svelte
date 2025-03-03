@@ -5,6 +5,11 @@
   export let electricity = 95;
   export let lateFee = 20;
   export let isOpen = true;
+  let selectedFile = null;
+
+  const submit = () => {
+    console.log(selectedFile);
+  };
 
   const closeModal = () => {
     isOpen = false;
@@ -103,8 +108,8 @@
     style="padding-bottom: 1rem;"
   >
     <p class="text-2xl mt-4 font-semibold text=[#404040] mb-4">ชำระเงิน</p>
-    <div class="p-8 rounded-xl bg-[#D9D9D9] bg-opacity-80">
-        <DragAndDrop />
+    <div class="p-8 rounded-xl bg-[#D9D9D9] bg-opacity-80 flex flex-col justify-center items-center">
+        <DragAndDrop bind:file={selectedFile} />
     </div>
     {#if isOpen}
         <div class="p-5 absolute bg-[#404040] rounded-xl mt-40">
@@ -122,7 +127,7 @@
     {/if}
     <div class="flex gap-4 mt-4">
       <button
-        class="rounded-xl text-[#F2F2F2] bg-[#404040] py-2 px-8"
+        class="rounded-xl text-[#F2F2F2] bg-[#404040] py-2 px-8" onclick={submit}
       >
         ยืนยัน
       </button>

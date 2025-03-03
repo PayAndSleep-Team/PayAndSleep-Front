@@ -3,16 +3,18 @@
     let container;
     let image;
     let placeholder;
-      let showImage = false;
-  
+    let showImage = false;
+    export let file = null;
+
     function onChange() {
-      const file = input.files[0];
+      file = input.files[0];
           
       if (file) {
               showImage = true;
   
         const reader = new FileReader();
         reader.addEventListener("load", function () {
+          file = reader.result;
           image.setAttribute("src", reader.result);
         });
         reader.readAsDataURL(file);

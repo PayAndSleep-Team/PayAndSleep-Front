@@ -16,7 +16,7 @@
       });
       user = await res.json();
       if (user.role !== "host") {
-        goto("/login");
+        goto("/landing/login");
       }
     } catch (error) {
       console.error("Error fetching message:", error);
