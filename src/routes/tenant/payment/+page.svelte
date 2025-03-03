@@ -1,11 +1,13 @@
 <script>
   import DragAndDrop from '$lib/components/DragAndDrop.svelte';
+  import Dropdown from '$lib/components/Dropdown.svelte';
   export let rent = 4500;
   export let water = 1389;
   export let electricity = 95;
   export let lateFee = 20;
   export let isOpen = true;
   let selectedFile = null;
+  let paymentMethod = "เลือกวิธีชำระเงิน";
 
   const submit = () => {
     console.log(selectedFile);
@@ -14,6 +16,10 @@
   const closeModal = () => {
     isOpen = false;
   };
+
+  $: if (paymentMethod === "พร้อมเพย์") {
+    isOpen = true;
+  }
 
   $: total = rent + water + electricity + lateFee;
 </script>
@@ -108,23 +114,32 @@
     style="padding-bottom: 1rem;"
   >
     <p class="text-2xl mt-4 font-semibold text=[#404040] mb-4">ชำระเงิน</p>
+    <div class="mb-4 text-xl"><Dropdown bind:value={paymentMethod}/></div>
+    {#if paymentMethod === "พร้อมเพย์"}
+      {#if isOpen}
+        <div class="p-5 absolute bg-[#404040] rounded-xl mt-40">
+          <button onclick="{closeModal}" class="absolute right-2 top-2">
+              <img src="/images/cross.svg" alt="cross" class="w-6 h-6"/>
+          </button>
+          
+          <div class="text-center">
+              <p class="text-xl">พร้อมเพย์</p>
+              <p class="text-xl mb-2">0958232112</p>
+          </div>
+          
+          <img src="/images/qrcode.jpg" alt="qrCode" class="w-96" />
+        </div>
+      {/if}
+    {/if}
+    {#if paymentMethod === "บัญชีธนาคาร"}
+        <div class="flex items-center justify-center flex-col text-white text-xl mb-4">
+          <p>ธนาคารกสิกรไทย</p>
+          <p>0671624096 ภูฟ้า มันทรานนท์</p>
+        </div>
+    {/if}
     <div class="p-8 rounded-xl bg-[#D9D9D9] bg-opacity-80 flex flex-col justify-center items-center">
         <DragAndDrop bind:file={selectedFile} />
     </div>
-    {#if isOpen}
-        <div class="p-5 absolute bg-[#404040] rounded-xl mt-40">
-            <button onclick="{closeModal}" class="absolute right-2 top-2">
-                <img src="/images/cross.svg" alt="cross" class="w-6 h-6"/>
-            </button>
-            
-            <div class="text-center">
-                <p class="text-xl">พร้อมเพย์</p>
-                <p class="text-xl mb-2">0958232112</p>
-            </div>
-            
-            <img src="/images/qrcode.jpg" alt="qrCode" class="w-96" />
-        </div>
-    {/if}
     <div class="flex gap-4 mt-4">
       <button
         class="rounded-xl text-[#F2F2F2] bg-[#404040] py-2 px-8" onclick={submit}
