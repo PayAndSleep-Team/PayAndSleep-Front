@@ -19,14 +19,11 @@
             <img src="/images/Icon.svg" alt="icon" class="mb-6 w-24 h-24 fill-[#F2F2F2]" />
             <p class="text-[#F2F2F2] font-normal font-jeju text-4xl">{name}</p>
             <p class="text-[#F2F2F2] font-normal font-jeju text-2xl mb-10">{email}</p>
-
-            <div class="w-full max-w-2xl text-left mb-10">
-                <p class="text-[#F2F2F2] text-2xl font-normal leading-none">รหัสผ่าน</p>
-                <p class="text-[#F2F2F2] text-xl mt-2">{password}</p>
+            <div class="w-full max-w-2xl text-left mb-10 relative">
+                <p class="text-[#F2F2F2] text-2xl font-normal leading-none mb-4">รหัสผ่าน</p>
+                <p class="text-[#F2F2F2] text-xl mb-4 pl-10">{password}</p>
+                <div class="absolute bottom-0 left-0 w-full border-t border-gray-400"></div>
             </div>
-
-            <div class="w-full max-w-2xl border-t border-gray-400 mb-8"></div>
-
             <div class="w-full max-w-3xl">
                 <p class="text-[#F2F2F2] text-2xl font-normal leading-none mb-10">ประวัติการเช่า</p>
                 <div class="grid grid-cols-2 gap-6">
