@@ -9,7 +9,7 @@
     const markAsRead = (item) => {
         item.isRead = true;
     };
-
+    
     onMount(async () => {
         try {
             const res = await fetch(`http://localhost:3000/api/get/notifications`, {
