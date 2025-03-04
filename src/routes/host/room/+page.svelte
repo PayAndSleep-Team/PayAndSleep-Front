@@ -95,7 +95,7 @@
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
-        class="bg-white rounded-xl shadow overflow-hidden p-2"
+        class="bg-white rounded-xl shadow overflow-hidden p-2 cursor-pointer"
         onclick={() => openModal(room)}
       >
         <div class="flex">
@@ -130,16 +130,30 @@
       </div>
     {/each}
     {#if isModalOpen}
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 gap-6"
+        onclick={closeModal}
       >
-        <div class="bg-[#404040] rounded-xl p-6 text-white w-80 relative">
-          <button class="absolute top-2 right-2" onclick={closeModal}>
-            <img src="/images/cross.svg" alt="close" class="w-6 h-6 m-2" />
-          </button>
-          <p class="text-2xl font-bold mb-2">{selectedRoom.number}</p>
-          <p class="text-lg mb-1">ชื่อ: {selectedRoom.name}</p>
-          <p class="text-lg mb-1">โทร: {selectedRoom.phoneNumber}</p>
+        <div
+          class="bg-[#404040] rounded-xl p-6 text-white w-80 h-24 flex justify-center items-center cursor-pointer"
+        >
+          <a href="/" class="text-white text-2xl font-bold text-center">จัดการห้องพัก</a>
+        </div>
+        <div
+          class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
+        >
+          <a href="/" class="text-white text-2xl font-bold text-center">
+            ตรวจสอบ<br />รายการชำระเงิน
+          </a>
+        </div>
+        <div
+          class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
+        >
+          <a href="/" class="text-white text-2xl font-bold text-center">
+            แจ้งค่าเช่า
+          </a>
         </div>
       </div>
     {/if}
