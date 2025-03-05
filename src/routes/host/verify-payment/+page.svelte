@@ -102,7 +102,7 @@
         <div class="flex">
           <div><img src="/images/greenRect.svg" alt="" /></div>
           <div class="flex flex-col">
-            <div class="px-3 text-xl text-[#557B55]">รวมยอดชำระ</div>
+            <div class="px-3 text-xl text-[#557B55]">วันที่ชำระ</div>
             <div
               class="px-3 text-5xl font-bold text-[#557B55]"
             >
