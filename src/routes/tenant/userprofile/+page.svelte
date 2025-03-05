@@ -111,14 +111,16 @@
         </div>
       </div>
     </div>
-      <button
-        onclick={toggleEdit}
-        class="absolute bottom-12 right-12 bg-transparent border-none p-0"
-      >
-          {#if isEditing}
+    <button onclick={toggleEdit} class="absolute bottom-12 right-12 border-none p-0">
+      {#if isEditing}
+          <div class="w-12 h-12 flex items-center justify-center">
               <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
-          {:else}
+          </div>
+      {:else}
+          <div class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center">
               <img src="/images/edit.svg" alt="Edit" class="w-8 h-8" />
-          {/if}
-      </button>
+          </div>
+      {/if}
+  </button>
+  
   </div>
