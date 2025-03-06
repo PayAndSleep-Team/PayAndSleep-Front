@@ -1,126 +1,231 @@
 <script>
-    import { onMount } from "svelte";
-  
-    const Api_url = "http://localhost:3000";
-    let user = $state({});
-    let profile = $state({});
-    let history = [
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    ];
-  
-    let isEditing = $state(false);
-    let tempName = $state("ปทิตตา ดวงแก้ว");
-    let tempEmail = $state("patittadua@gmail.com");
-    let tempPassword = $state("Pramandanijjanukor2546");
-  
-    onMount(async () => {
-      try {
-        const res = await fetch(`${Api_url}/api/session`, {
-          method: "GET",
-          credentials: "include",
-        });
-        user = await res.json();
-        profile = user.profile;
-        tempName = profile?.name;
-        tempEmail = user?.email || "Enter Email";
-        tempPassword = user?.password || "Enter Password";
-      } catch (error) {
-        console.error("Error fetching message:", error);
+  import { fade, fly, scale } from "svelte/transition";
+  import { onMount } from "svelte";
+
+  const Api_url = "http://localhost:3000";
+  let user = $state({});
+  let profile = $state({});
+  let history = [
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+  ];
+
+  let isEditing = $state(false);
+  let tempName = $state("ปทิตตา ดวงแก้ว");
+  let tempEmail = $state("patittadua@gmail.com");
+  let tempPassword = $state("Pramandanijjanukor2546");
+
+  onMount(async () => {
+    try {
+      const res = await fetch(`${Api_url}/api/session`, {
+        method: "GET",
+        credentials: "include",
+      });
+      user = await res.json();
+      profile = user.profile;
+      tempName = profile?.name;
+      tempEmail = user?.email || "Enter Email";
+      tempPassword = user?.password || "Enter Password";
+    } catch (error) {
+      console.error("Error fetching message:", error);
+    }
+  });
+
+  function toggleEdit() {
+    if (!isEditing) {
+      tempName = profile?.name;
+      tempEmail = user?.email;
+      tempPassword = user?.password;
+    } else {
+      if (profile) {
+        profile.name = tempName;
       }
-    });
-  
-    function toggleEdit() {
-      if (!isEditing) {
-        tempName = profile?.name;
-        tempEmail = user?.email;
-        tempPassword = user?.password;
-      } else {
-        if (profile) {
-          profile.name = tempName;
-        }
-        if (user) {
-          user.email = tempEmail;
-          user.password = tempPassword;
-        }
+      if (user) {
+        user.email = tempEmail;
+        user.password = tempPassword;
       }
       isEditing = !isEditing;
     }
-  </script>
-  
-  <div class="w-full min-h-full relative">
-    <div class="w-full h-full flex flex-col items-center justify-center">
-      <div class="w-full pt-16 flex flex-col items-center px-10">
+  }
+  async function save() {
+    try {
+      const res = await fetch(`${Api_url}/api/update/profile`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: tempName,
+          email: tempEmail,
+          password: tempPassword,
+        }),
+      });
+      const data = await res.json();
+      if (data.message === "อัพเดทโปรไฟล์สำเร็จ") {
+        toggleEdit();
+      }
+    } catch (error) {
+      console.error("Error fetching message:", error);
+    }
+  }
+</script>
+
+<div class="w-full min-h-full relative p-4 md:p-8" in:fade={{ duration: 300 }}>
+  <div class="w-full h-full flex flex-col items-center justify-center">
+    <div
+      class="w-full max-w-4xl pt-8 md:pt-16 flex flex-col items-center px-4 md:px-10"
+    >
+      <!-- Profile Image -->
+      <div class="relative mb-6" in:scale={{ duration: 400, delay: 100 }}>
         <img
           src="/images/Icon.svg"
           alt="icon"
-          class="mb-6 w-24 h-24 fill-[#F2F2F2]"
+          class="w-20 h-20 md:w-24 md:h-24 fill-[#F2F2F2] transition-transform duration-300 hover:scale-105"
         />
+      </div>
+
+      <!-- Profile Info -->
+      <div
+        class="w-full flex flex-col items-center space-y-4"
+        in:fly={{ y: 20, duration: 400, delay: 200 }}
+      >
         {#if isEditing}
-          <input class="mb-4 py-1 px-6 rounded-xl border-2  border-[#404040] bg-[#F2F2F2] text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal" bind:value={tempName} placeholder="Enter Name"/>
+          <input
+            class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                               text-center placeholder-[#8B8B8C] font-jeju text-xl md:text-2xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+            bind:value={tempName}
+            placeholder="Enter Name"
+          />
         {:else}
-          <p class="text-[#F2F2F2] font-normal font-jeju text-4xl">{tempName}</p>
+          <p
+            class="text-[#F2F2F2] font-normal font-jeju text-3xl md:text-4xl text-center"
+          >
+            {tempName}
+          </p>
         {/if}
-  
+
         {#if isEditing}
-          <input class="py-1 px-6 rounded-xl border-2 border-[#404040] bg-[#F2F2F2] text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal" bind:value={tempEmail} placeholder="Enter Email"/>
+          <input
+            class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                               text-center placeholder-[#8B8B8C] font-jeju text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+            bind:value={tempEmail}
+            placeholder="Enter Email"
+            type="email"
+          />
         {:else}
-          <p class="text-[#F2F2F2] font-normal font-jeju text-2xl mb-10">
+          <p
+            class="text-[#F2F2F2] font-normal font-jeju text-xl md:text-2xl mb-6 text-center"
+          >
             {tempEmail}
           </p>
         {/if}
-  
-        <div class="w-full max-w-2xl text-left mb-10 relative mr-24">
-          <p class="text-[#F2F2F2] text-2xl font-normal leading-none mb-4">
-            รหัสผ่าน
+      </div>
+
+      <!-- Password Section -->
+      <div
+        class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0"
+        in:fly={{ y: 20, duration: 400, delay: 300 }}
+      >
+        <p
+          class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4"
+        >
+          รหัสผ่าน
+        </p>
+        {#if isEditing}
+          <input
+            class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                               text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+            bind:value={tempPassword}
+            placeholder="Enter Password"
+          />
+        {:else}
+          <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+            {tempPassword}
           </p>
-          {#if isEditing}
-            <input class="mb-4 w-full py-1 px-6 rounded-xl border-[#404040] bg-[#F2F2F2] text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal" bind:value={tempPassword} placeholder="Enter Password"/>
-          {:else}
-            <p class="text-[#F2F2F2] text-xl mb-4 pl-10">{tempPassword}</p>
-          {/if}
-          <div
-            class="absolute bottom-0 left-0 w-full border-t-2"
-          ></div>
-        </div>
-        <div class="w-full max-w-3xl">
-          <p class="text-[#F2F2F2] text-2xl font-normal leading-none mb-6">
-            ประวัติการเช่า
-          </p>
-          <div class="grid grid-cols-2 gap-6">
-            {#each history as item}
-            <div class="bg-white rounded-xl shadow overflow-hidden p-2">
-              <div class="flex">
-                <div><img src="/images/grayRect.svg" alt="" class="h-20"/></div>
-                <div class="flex flex-col justify-center">
-                  <div class="px-3 text-xl text-[#404040]">{item.month} ยอดรวม {item.amount}</div>
-                  <div
-                    class="px-3 text-xl text-[#404040]"
-                  >
-                    สภานะ: {item.status}
+        {/if}
+        <div
+          class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"
+        ></div>
+      </div>
+
+      <!-- Rental History -->
+      <div
+        class="w-full max-w-3xl px-4 md:px-0"
+        in:fly={{ y: 20, duration: 400, delay: 400 }}
+      >
+        <p
+          class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-6"
+        >
+          ประวัติการเช่า
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {#each history as item, i}
+            <div
+              class="bg-white rounded-xl max-h-28 shadow overflow-hidden p-2 transform transition-all duration-300 hover:scale-105"
+              in:fly={{ y: 20, duration: 300, delay: 500 + i * 100 }}
+            >
+              <div class="flex items-center h-full">
+                <div class="h-full w-[11px] ml-1 my-2 bg-[#404040]"></div>
+                <div class="flex flex-col justify-center flex-1 ml-3">
+                  <div class="text-base md:text-xl text-[#404040]">
+                    {item.month}
+                  </div>
+                  <div class="text-base md:text-xl text-[#404040]">
+                    ยอดรวม {item.amount}
+                  </div>
+                  <div class="text-base md:text-xl text-[#404040]">
+                    สถานะ: {item.status}
                   </div>
                 </div>
               </div>
             </div>
-            {/each}
-          </div>
+          {/each}
+        </div>
+
+        <!-- Logout Button -->
+        <div
+          class="mt-10 flex justify-center"
+          in:fly={{ y: 20, duration: 300, delay: 800 }}
+        >
+          <button
+            class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-3 px-8 rounded-xl
+                               border border-white border-opacity-30 transition-all duration-300 hover:scale-105
+                               flex items-center space-x-2"
+            onclick={() => (window.location.href = "/landing/login")}
+          >
+            <span>ออกจากระบบ</span>
+          </button>
         </div>
       </div>
     </div>
-    <button onclick={toggleEdit} class="absolute bottom-12 right-12 border-none p-0">
-      {#if isEditing}
-          <div class="w-12 h-12 flex items-center justify-center">
-              <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
-          </div>
-      {:else}
-          <div class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center">
-              <img src="/images/edit.svg" alt="Edit" class="w-8 h-8" />
-          </div>
-      {/if}
-  </button>
-  
   </div>
+
+  <!-- Edit Button -->
+  <button
+    onclick={toggleEdit}
+    class="fixed bottom-8 right-8 md:bottom-12 md:right-12 border-none p-0 transform transition-all duration-300 hover:scale-110"
+    in:fade={{ duration: 300, delay: 600 }}
+  >
+    {#if isEditing}
+      <div
+        class="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center"
+      >
+        <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
+      </div>
+    {:else}
+      <div
+        class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center"
+      >
+        <img src="/images/edit.svg" alt="Edit" class="p-1 w-8 h-8" />
+      </div>
+    {/if}
+  </button>
+</div>
