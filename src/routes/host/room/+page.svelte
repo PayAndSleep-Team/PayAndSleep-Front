@@ -114,6 +114,14 @@
   function gotoRentfee() {
     goto(`/host/rentfee?id=${selectedRoom.id}`);
   }
+
+  function gotoManagerooms() {
+    goto(`/host/managerooms?id=${selectedRoom.id}`);
+  }
+
+  function gotoVerifyPayment() {
+    goto(`/host/verify-payment?id=${selectedRoom.id}`);
+  }
 </script>
 
 <div class="p-4 w-full">
@@ -167,20 +175,24 @@
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 gap-6"
         onclick={closeModal}
       >
+      <button onclick={gotoManagerooms}>
         <div
           class="bg-[#404040] rounded-xl p-6 text-white w-80 h-24 flex justify-center items-center cursor-pointer"
         >
-          <a href="/" class="text-white text-2xl font-bold text-center"
-            >จัดการห้องพัก</a
+          <p class="text-white text-2xl font-bold text-center"
+            >จัดการห้องพัก</p
           >
         </div>
-        <div
-          class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
-        >
-          <a href="/" class="text-white text-2xl font-bold text-center">
-            ตรวจสอบ<br />รายการชำระเงิน
-          </a>
-        </div>
+      </button>
+        <button onclick={gotoVerifyPayment}>
+          <div
+            class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
+          >
+            <p class="text-white text-2xl font-bold text-center">
+              ตรวจสอบ<br />รายการชำระเงิน
+            </p>
+          </div>
+        </button>
         <button onclick={gotoRentfee}>
           <div
             class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
