@@ -20,7 +20,7 @@
         credentials: "include",
       });
       user = await res.json();
-      if (user.role !== "tenant") {
+      if (user.role !== "host") {
         goto("/landing/login");
       }
     } catch (error) {

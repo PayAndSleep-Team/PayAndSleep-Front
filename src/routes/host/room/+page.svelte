@@ -1,4 +1,5 @@
 <script>
+  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
 
   const Api_url = "http://localhost:3000";
@@ -109,6 +110,10 @@
       return "ไม่ว่าง";
     }
   };
+
+  function gotoRentfee() {
+    goto(`/host/rentfee?id=${selectedRoom.id}`);
+  }
 </script>
 
 <div class="p-4 w-full">
@@ -176,13 +181,13 @@
             ตรวจสอบ<br />รายการชำระเงิน
           </a>
         </div>
-        <div
-          class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
-        >
-          <a href="/" class="text-white text-2xl font-bold text-center">
-            แจ้งค่าเช่า
-          </a>
-        </div>
+        <button onclick={gotoRentfee}>
+          <div
+            class="bg-[#404040] rounded-xl p-6 w-80 h-24 flex justify-center items-center cursor-pointer"
+          >
+            <p class="text-white text-2xl font-bold text-center">แจ้งค่าเช่า</p>
+          </div>
+        </button>
       </div>
     {/if}
   </div>
