@@ -1,6 +1,7 @@
 <script>
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import { fade, fly, scale } from 'svelte/transition';
 
   const Api_url = "http://localhost:3000";
   let properties = $state([]);
@@ -10,9 +11,12 @@
   let selectedRoom = $state("");
   let selectedProperty = $state("");
   let start_date = $state("");
+  let isLoading = $state(false);
+  let errorMessage = $state("");
   let room = $derived(rooms.find((r) => r.room_number === selectedRoom));
 
   onMount(async () => {
+    isLoading = true;
     try {
       const res = await fetch(`${Api_url}/api/get/property`, {
         method: "GET",
@@ -21,16 +25,21 @@
       properties = await res.json();
     } catch (error) {
       console.error("Error fetching properties:", error);
-      alert("Failed to load properties");
+      errorMessage = "ไม่สามารถโหลดข้อมูลที่พักได้";
+    } finally {
+      isLoading = false;
     }
   });
 
   const getRooms = async () => {
+    if (!selectedProperty) {
+      errorMessage = "กรุณาเลือกที่พัก";
+      return;
+    }
+    
+    errorMessage = "";
+    isLoading = true;
     try {
-      if (!selectedProperty) {
-        alert("กรุณาเลือกที่พัก");
-        return;
-      }
       showRoomSelection = true;
       const prop = properties.find((p) => p.name === selectedProperty);
       const res = await fetch(
@@ -43,24 +52,30 @@
       rooms = await res.json();
     } catch (error) {
       console.error("Error fetching rooms:", error);
-      alert("Failed to load rooms");
+      errorMessage = "ไม่สามารถโหลดข้อมูลห้องพักได้";
+      showRoomSelection = false;
+    } finally {
+      isLoading = false;
     }
   };
 
   const createRentalContract = async () => {
+    if (!selectedRoom) {
+      errorMessage = "กรุณาเลือกห้อง";
+      return;
+    }
+    if (!start_date) {
+      errorMessage = "กรุณาเลือกวันที่เข้าอยู่";
+      return;
+    }
+    if (!contractDuration.years) {
+      errorMessage = "กรุณากรอกระยะเวลาของสัญญา";
+      return;
+    }
+    
+    errorMessage = "";
+    isLoading = true;
     try {
-      if (!selectedRoom) {
-        alert("กรุณาเลือกห้อง");
-        return;
-      }
-      if (!start_date) {
-        alert("กรุณาเลือกวันที่เข้าอยู่");
-        return;
-      }
-      if (!contractDuration.years) {
-        alert("กรุณากรอกระยะเวลาของสัญญา");
-        return;
-      }
       const room = rooms.find((r) => r.room_number === selectedRoom);
       const res = await fetch(`${Api_url}/api/create/rental-contract`, {
         method: "POST",
@@ -75,13 +90,18 @@
         }),
       });
       const data = await res.json();
-      alert(data.message);
+      
       if (data.message === "สร้างสัญญาเช่าสำเร็จ") {
-        goto("/tenant/waiting");
+        showSuccessMessage();
+        setTimeout(() => goto("/tenant/waiting"), 1500);
+      } else {
+        errorMessage = data.message;
       }
     } catch (error) {
       console.error("Error creating rental contract:", error);
-      alert("Failed to create rental contract");
+      errorMessage = "ไม่สามารถสร้างสัญญาเช่าได้";
+    } finally {
+      isLoading = false;
     }
   };
 
@@ -100,29 +120,65 @@
   function endDate() {
     let date = new Date(start_date);
     date.setFullYear(date.getFullYear() + Number(contractDuration.years));
-    date.setMonth(date.getMonth() + Number(contractDuration.months));
+    date.setMonth(date.getMonth() + Number(contractDuration.months || 0));
     return formatDateTime(date);
+  }
+  
+  function showSuccessMessage() {
+    const successMessage = document.createElement('div');
+    successMessage.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+    successMessage.innerHTML = `
+      <div class="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center">
+        <svg class="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <p class="text-xl font-medium">สร้างสัญญาเช่าสำเร็จ</p>
+        <p class="text-gray-500 mt-2">กำลังนำคุณไปยังหน้ารอการยืนยัน...</p>
+      </div>
+    `;
+    document.body.appendChild(successMessage);
+    setTimeout(() => {
+      document.body.removeChild(successMessage);
+    }, 1500);
+  }
+  
+  function goBack() {
+    showRoomSelection = false;
+    selectedRoom = "";
+    errorMessage = "";
   }
 </script>
 
-<div class=" w-full h-screen flex justify-end items-center pr-[5%]">
+<div class="w-full h-screen flex justify-center md:justify-end items-center px-4 md:pr-[5%]" in:fade={{ duration: 300 }}>
   {#if !showRoomSelection}
     <div
-      class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-[45%] h-[95%] shadow-lg flex flex-col items-center justify-center p-5"
+      class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-full sm:w-[80%] md:w-[60%] lg:w-[45%] h-auto py-10 md:h-[95%] shadow-lg flex flex-col items-center justify-center p-5"
+      in:scale={{ duration: 400, delay: 100 }}
     >
       <h1
-        class="text-[#404040] text-center font-jeju text-4xl font-normal mb-8"
+        class="text-[#404040] text-center font-jeju text-3xl md:text-4xl font-normal mb-8"
+        in:fly={{ y: -20, duration: 400, delay: 200 }}
       >
         เลือกที่พัก
       </h1>
-      <form class="w-full flex flex-col items-center">
-        <div class="relative w-[60%] max-w-[550px] min-w-[400px] mb-8">
+      
+      {#if errorMessage}
+        <div 
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 w-[90%] max-w-[550px]"
+          in:fly={{ y: 20, duration: 300 }}
+        >
+          <p>{errorMessage}</p>
+        </div>
+      {/if}
+      
+      <form class="w-full flex flex-col items-center" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+        <div class="relative w-full sm:w-[80%] md:w-[60%] mb-8 transition-all duration-300 hover:scale-[1.01]">
           <select
             bind:value={selectedProperty}
             required
-            class="w-full py-3 px-5 rounded-[25px] border-2 border-[#404040] bg-transparent text-left appearance-none pr-10 {selectedProperty
+            class="w-full py-3 px-5 rounded-xl border-2 border-[#404040] bg-transparent text-left appearance-none pr-10 {selectedProperty
               ? 'text-[#404040]'
-              : 'text-[#8B8B8C]'} font-jeju text-xl font-normal"
+              : 'text-[#8B8B8C]'} font-jeju text-xl font-normal focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all"
           >
             <option value="" disabled selected>ที่พัก</option>
             {#each properties as property}
@@ -139,85 +195,152 @@
         </div>
         <button
           type="button"
-          onclick={() => {
-            getRooms();
-          }}
-          class="w-[60%] py-3 rounded-[25px] text-xl cursor-pointer mt-5 bg-[#404040] text-white border-none"
+          onclick={getRooms}
+          disabled={isLoading}
+          class="w-full sm:w-[80%] md:w-[60%] py-3 rounded-xl text-xl cursor-pointer mt-5 bg-[#404040] text-white border-none hover:bg-[#333333] transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#404040] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          ตกลง
+          {#if isLoading}
+            <span class="flex items-center justify-center">
+              <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              กำลังโหลด...
+            </span>
+          {:else}
+            ตกลง
+          {/if}
         </button>
       </form>
     </div>
   {:else}
     <div
-      class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-[45%] h-[95%] shadow-lg flex flex-col items-center justify-center p-5"
+      class="bg-[rgba(242,242,242,0.8)] rounded-2xl w-full sm:w-[80%] md:w-[60%] lg:w-[45%] h-auto py-10 md:h-[95%] shadow-lg flex flex-col items-center justify-center p-5 overflow-y-auto"
+      in:scale={{ duration: 400 }}
     >
       <h1
-        class="text-[#404040] text-center font-jeju text-4xl font-normal mb-8"
+        class="text-[#404040] text-center font-jeju text-3xl md:text-4xl font-normal mb-6"
+        in:fly={{ y: -20, duration: 400, delay: 100 }}
       >
         เลือกห้องพัก
       </h1>
-      <div class="relative w-[60%] max-w-[550px] min-w-[400px]">
-        <select
-          bind:value={selectedRoom}
-          class="w-full py-3 px-5 rounded-[25px] border-2 border-[#404040] bg-transparent text-left appearance-none pr-10 {selectedRoom
-            ? 'text-[#404040]'
-            : 'text-[#8B8B8C]'} font-jeju text-xl font-normal"
+      
+      {#if errorMessage}
+        <div 
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4 w-[90%] max-w-[550px]"
+          in:fly={{ y: 20, duration: 300 }}
         >
-          <option value="" disabled selected>ห้อง</option>
-          {#each rooms as room}
-            <option value={room.room_number} class="text-[#404040]"
-              >{room.room_number}</option
-            >
-          {/each}
-        </select>
-        <div
-          class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#404040]"
-        >
-          ▼
+          <p>{errorMessage}</p>
         </div>
-      </div>
-      {#if room}
-        <div
-          class="flex justify-between gap-2.5 mt-5 text-center w-[80%] text-[#8B8B8C] font-jeju text-xl font-normal"
-        >
-          <p>ขนาด {room.size} ตรม.</p>
-          <p>บาท/เดือน {room.price} บาท</p>
-        </div>
-        <!-- create start date ui -->
-         <div class="flex flex-col items-start gap-2.5 mt-5 text-center w-[80%] text-[#8B8B8C] font-jeju text-xl font-normal">
-          <label for="start_date" class="block text-gray-700 text-xl font-bold mb-2">วันที่จะเข้าอยู่</label>
-          <input type="date" id="start_date" name="start_date" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-[rgba(242,242,242,0.8)]" bind:value={start_date} />
-         </div>
       {/if}
-      <div class="mt-5 text-center w-full">
-        <p
-          class="text-[#404040] font-jeju text-xl font-normal mb-3.5 pl-[10%] text-left"
-        >
-          ระยะเวลาของสัญญา
-        </p>
-        <div class="flex justify-center gap-2.5">
-          <input
-            type="number"
-            placeholder="ปี"
-            bind:value={contractDuration.years}
-            class="w-[40%] py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
-          />
-          <input
-            type="number"
-            placeholder="เดือน"
-            bind:value={contractDuration.months}
-            class="w-[40%] py-2.5 px-6 rounded-[25px] border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-xl font-normal"
-          />
+      
+      <div class="w-full flex flex-col items-center" in:fly={{ y: 20, duration: 400, delay: 200 }}>
+        <div class="relative w-full sm:w-[80%] mb-6 transition-all duration-300 hover:scale-[1.01]">
+          <select
+            bind:value={selectedRoom}
+            class="w-full py-3 px-5 rounded-xl border-2 border-[#404040] bg-transparent text-left appearance-none pr-10 {selectedRoom
+              ? 'text-[#404040]'
+              : 'text-[#8B8B8C]'} font-jeju text-xl font-normal focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all"
+          >
+            <option value="" disabled selected>ห้อง</option>
+            {#each rooms as room}
+              <option value={room.room_number} class="text-[#404040]"
+                >{room.room_number}</option
+              >
+            {/each}
+          </select>
+          <div
+            class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#404040]"
+          >
+            ▼
+          </div>
         </div>
+        
+        {#if room}
+          <div
+            class="flex flex-col sm:flex-row justify-between gap-4 mt-2 text-center w-[90%] text-[#404040] font-jeju text-lg md:text-xl font-normal bg-white bg-opacity-50 p-4 rounded-xl"
+            in:fade={{ duration: 300 }}
+          >
+            <p class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              ขนาด {room.size} ตรม.
+            </p>
+            <p class="flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {room.price} บาท/เดือน
+            </p>
+          </div>
+          
+          <div class="flex flex-col items-start gap-2.5 mt-5 w-full sm:w-[80%]" in:fade={{ duration: 300, delay: 300 }}>
+            <label for="start_date" class="text-[#404040] font-jeju text-lg">วันที่เข้าอยู่</label>
+            <input
+              type="date"
+              id="start_date"
+              bind:value={start_date}
+              class="w-full py-3 px-5 rounded-xl border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-lg font-normal focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300 hover:scale-[1.01]"
+            />
+          </div>
+          
+          <div class="flex flex-col items-start gap-2.5 mt-4 w-full sm:w-[80%]" in:fade={{ duration: 300, delay: 400 }}>
+            <!-- svelte-ignore a11y_label_has_associated_control -->
+            <label class="text-[#404040] font-jeju text-lg">ระยะเวลาของสัญญา</label>
+            <div class="grid grid-cols-2 gap-4 w-full">
+              <div class="flex flex-col">
+                <input
+                  type="number"
+                  min="0"
+                  max="99"
+                  placeholder="ปี"
+                  bind:value={contractDuration.years}
+                  class="w-full py-3 px-5 rounded-xl border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-lg font-normal focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300 hover:scale-[1.01]"
+                />
+              </div>
+              <div class="flex flex-col">
+                <input
+                  type="number"
+                  min="0"
+                  max="11"
+                  placeholder="เดือน"
+                  bind:value={contractDuration.months}
+                  class="w-full py-3 px-5 rounded-xl border-2 border-[#404040] bg-transparent text-left placeholder-[#8B8B8C] font-jeju text-lg font-normal focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300 hover:scale-[1.01]"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4 mt-8 w-full sm:w-[80%]" in:fade={{ duration: 300, delay: 500 }}>
+            <button
+              type="button"
+              onclick={createRentalContract}
+              disabled={isLoading}
+              class="w-full py-3 rounded-xl text-xl cursor-pointer bg-[#404040] text-white border-none hover:bg-[#333333] transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#404040] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {#if isLoading}
+                <span class="flex items-center justify-center">
+                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  กำลังสร้างสัญญา...
+                </span>
+              {:else}
+                สร้างสัญญาเช่า
+              {/if}
+            </button>
+            <button
+              type="button"
+              onclick={goBack}
+              class="w-full py-3 rounded-xl text-xl cursor-pointer bg-transparent text-[#404040] border-2 border-[#404040] hover:bg-[#40404010] transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-[#404040]"
+            >
+              ย้อนกลับ
+            </button>
+          </div>
+        {/if}
       </div>
-      <button
-        type="button"
-        onclick={createRentalContract}
-        class="w-[80%] py-3 rounded-[25px] text-xl cursor-pointer mt-5 bg-[#404040] text-white border-none"
-      >
-        ตกลง
-      </button>
     </div>
   {/if}
 </div>
@@ -227,4 +350,10 @@
     font-family: "JejuGothic";
     src: url("/fonts/JejuGothic-Regular.ttf") format("truetype");
   }
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.5);
+    cursor: pointer;
+  }
+  
 </style>
