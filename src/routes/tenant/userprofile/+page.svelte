@@ -74,6 +74,22 @@
       console.error("Error fetching message:", error);
     }
   }
+
+  async function logout() {
+    try {
+      const res = await fetch(`${Api_url}/api/logout`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      alert(data.message);
+      if (data.message === "ออกจากระบบสำเร็จ") {
+        window.location.href = "/landing/login";
+      }
+    } catch (error) {
+      console.error("Error fetching message:", error);
+    }
+  }
 </script>
 
 <div class="w-full min-h-full relative p-4 md:p-8" in:fade={{ duration: 300 }}>
@@ -200,7 +216,7 @@
             class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-3 px-8 rounded-xl
                                border border-white border-opacity-30 transition-all duration-300 hover:scale-105
                                flex items-center space-x-2"
-            onclick={() => (window.location.href = "/landing/login")}
+            onclick={() => logout()}
           >
             <span>ออกจากระบบ</span>
           </button>
@@ -209,23 +225,22 @@
     </div>
   </div>
   <!-- Edit Button -->
-  <button
-    onclick={toggleEdit}
-    class="fixed bottom-8 right-8 md:bottom-12 md:right-12 border-none p-0 transform transition-all duration-300 hover:scale-110"
-    in:fade={{ duration: 300, delay: 600 }}
-  >
-    {#if isEditing}
-      <div
-        class="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center"
-      >
+  {#if isEditing}
+    <button onclick={save} class="absolute bottom-12 right-12 border-none p-0">
+      <div class="w-12 h-12 flex items-center justify-center">
         <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
       </div>
-    {:else}
+    </button>
+  {:else}
+    <button
+      onclick={toggleEdit}
+      class="absolute bottom-12 right-12 border-none p-0"
+    >
       <div
         class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center"
       >
-        <img src="/images/edit.svg" alt="Edit" class="p-1 w-8 h-8" />
+        <img src="/images/edit.svg" alt="Edit" class="w-8 h-8" />
       </div>
-    {/if}
-  </button>
+    </button>
+  {/if}
 </div>

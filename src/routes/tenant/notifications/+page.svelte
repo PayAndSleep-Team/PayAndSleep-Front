@@ -5,11 +5,13 @@
     /** @type {{ data: import('./$types').PageData }} */
     let { data } = $props();
 
+    const Api_url = "http://localhost:3000";
+
     let notifications = $state([]);
 
     async function markAsRead(id) {
         try {
-            const res = await fetch(`http://localhost:3000/api/read/notification`, {
+            const res = await fetch(`${Api_url}/api/read/notification`, {
                 method: "PUT",
                 credentials: "include",
                 headers: { 'Content-Type': 'application/json' },
@@ -31,6 +33,10 @@
 
     onMount(async () => {
         try {
+            const res = await fetch(`${Api_url}/api/get/notifications`, {
+                method: "GET",
+                credentials: "include",
+            });
             notifications = await res.json();
         } catch (error) {
             console.error("Error fetching message:", error);
