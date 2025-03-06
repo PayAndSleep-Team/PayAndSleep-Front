@@ -46,7 +46,6 @@
              class="w-6 h-6 md:w-8 md:h-8 transition-transform hover:scale-110">
         <p class="text-xl md:text-2xl ml-2 text-[#F2F2F2]">การแจ้งเตือน</p>
     </div>
-
     <div class="flex flex-col gap-4 md:gap-6 px-4 sm:px-8 md:px-12 lg:px-20">
         {#each notifications as notification, i}
             <!-- svelte-ignore a11y_click_events_have_key_events -->

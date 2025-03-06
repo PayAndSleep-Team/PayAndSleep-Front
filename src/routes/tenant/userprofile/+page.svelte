@@ -48,9 +48,10 @@
         user.email = tempEmail;
         user.password = tempPassword;
       }
-      isEditing = !isEditing;
     }
+    isEditing = !isEditing;
   }
+
   async function save() {
     try {
       const res = await fetch(`${Api_url}/api/update/profile`, {
@@ -207,7 +208,6 @@
       </div>
     </div>
   </div>
-
   <!-- Edit Button -->
   <button
     onclick={toggleEdit}
