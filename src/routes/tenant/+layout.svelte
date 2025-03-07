@@ -50,7 +50,7 @@
     >
       <nav class="space-y-1 md:space-y-2 w-full px-2">
         {#each [
-          { href: '/tenant/', text: 'หน้าหลัก' },
+          { href: '/tenant/dashboard', text: 'หน้าหลัก' },
           { href: '/tenant/userprofile', text: 'ข้อมูลส่วนตัว' },
           { href: '/tenant/notifications', text: 'การแจ้งเตือน' },
           { href: '/tenant/submitrequest', text: 'ส่งคำร้อง\nช่องบำรุง' },
