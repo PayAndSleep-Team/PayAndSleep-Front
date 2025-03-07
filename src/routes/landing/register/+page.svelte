@@ -12,19 +12,13 @@
     let name = $state("");
     let phone = $state("");
     let password = $state("");
-    let confirm_password = $state("");
     let isLoading = $state(false);
     let errorMessage = $state("");
   
     async function register() {
       errorMessage = "";
       
-      if (password !== confirm_password) {
-        errorMessage = "รหัสผ่านไม่ตรงกัน";
-        return;
-      }
-      
-      if (email === "" || password === "" || confirm_password === "" || role === "" || name === "" || phone === "") {
+      if (email === "" || password === "" || role === "" || name === "" || phone === "") {
         errorMessage = "กรุณากรอกข้อมูลให้ครบ";
         return;
       }
