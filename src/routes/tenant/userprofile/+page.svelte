@@ -173,6 +173,33 @@
         ></div>
       </div>
 
+      <div
+      class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0"
+      in:fly={{ y: 20, duration: 400, delay: 300 }}
+    >
+      <p
+        class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4"
+      >
+        เบอร์โทรศัพท์
+      </p>
+      {#if isEditing}
+        <input
+          class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                             text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                             focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+          bind:value={tempPassword}
+          placeholder="Enter Password"
+        />
+      {:else}
+        <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+          {tempPassword}
+        </p>
+      {/if}
+      <div
+        class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"
+      ></div>
+    </div>
+
       <!-- Rental History -->
       <div
         class="w-full max-w-3xl px-4 md:px-0"

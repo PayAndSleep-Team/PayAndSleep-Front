@@ -1,0 +1,259 @@
+<script>
+    import { fade, fly, scale } from "svelte/transition";
+    import { onMount } from "svelte";
+  
+    const Api_url = "http://localhost:3000";
+    let user = $state({});
+    let profile = $state({});
+    let history = [
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
+    ];
+  
+    let isEditing = $state(false);
+    let tempName = $state("ปทิตตา ดวงแก้ว");
+    let tempEmail = $state("patittadua@gmail.com");
+    let tempPassword = $state("Pramandanijjanukor2546");
+  
+    onMount(async () => {
+      try {
+        const res = await fetch(`${Api_url}/api/session`, {
+          method: "GET",
+          credentials: "include",
+        });
+        user = await res.json();
+        profile = user.profile;
+        tempName = profile?.name;
+        tempEmail = user?.email || "Enter Email";
+        tempPassword = user?.password || "Enter Password";
+      } catch (error) {
+        console.error("Error fetching message:", error);
+      }
+    });
+  
+    function toggleEdit() {
+      if (!isEditing) {
+        tempName = profile?.name;
+        tempEmail = user?.email;
+        tempPassword = user?.password;
+      } else {
+        if (profile) {
+          profile.name = tempName;
+        }
+        if (user) {
+          user.email = tempEmail;
+          user.password = tempPassword;
+        }
+      }
+      isEditing = !isEditing;
+    }
+  
+    async function save() {
+      try {
+        const res = await fetch(`${Api_url}/api/update/profile`, {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: tempName,
+            email: tempEmail,
+            password: tempPassword,
+          }),
+        });
+        const data = await res.json();
+        if (data.message === "อัพเดทโปรไฟล์สำเร็จ") {
+          toggleEdit();
+        }
+      } catch (error) {
+        console.error("Error fetching message:", error);
+      }
+    }
+  
+    async function logout() {
+      try {
+        const res = await fetch(`${Api_url}/api/logout`, {
+          method: "GET",
+          credentials: "include",
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.message === "ออกจากระบบสำเร็จ") {
+          window.location.href = "/landing/login";
+        }
+      } catch (error) {
+        console.error("Error fetching message:", error);
+      }
+    }
+  </script>
+  
+  <div class="w-full min-h-full relative p-4 md:p-8" in:fade={{ duration: 300 }}>
+    <div class="w-full h-full flex flex-col items-center justify-center">
+      <div class="w-full max-w-4xl pt-8 md:pt-16 flex flex-col items-center px-4 md:px-10">
+        <!-- Profile Image -->
+        <div class="relative mb-6" in:scale={{ duration: 400, delay: 100 }}>
+          <img
+            src="/images/Icon.svg"
+            alt="icon"
+            class="w-20 h-20 md:w-24 md:h-24 fill-[#F2F2F2] transition-transform duration-300 hover:scale-105"
+          />
+        </div>
+  
+        <!-- Profile Info -->
+        <div class="w-full flex flex-col items-center space-y-4" in:fly={{ y: 20, duration: 400, delay: 200 }}>
+          {#if isEditing}
+            <input
+              class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-center placeholder-[#8B8B8C] font-jeju text-xl md:text-2xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempName}
+              placeholder="Enter Name"
+            />
+          {:else}
+            <p class="text-[#F2F2F2] font-normal font-jeju text-3xl md:text-4xl text-center">
+              {tempName}
+            </p>
+          {/if}
+  
+          {#if isEditing}
+            <input
+              class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-center placeholder-[#8B8B8C] font-jeju text-xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempEmail}
+              placeholder="Enter Email"
+              type="email"
+            />
+          {:else}
+            <p class="text-[#F2F2F2] font-normal font-jeju text-xl md:text-2xl mb-6 text-center">
+              {tempEmail}
+            </p>
+          {/if}
+        </div>
+  
+        <!-- Phone Section -->
+        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+            เบอร์โทรศัพท์
+          </p>
+          {#if isEditing}
+            <input
+              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempPassword}
+              placeholder="Enter Password"
+            />
+          {:else}
+            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+              {tempPassword}
+            </p>
+          {/if}
+          <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
+        </div>
+  
+        <!-- Password Section -->
+        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+            รหัสผ่าน
+          </p>
+          {#if isEditing}
+            <input
+              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempPassword}
+              placeholder="Enter Password"
+            />
+          {:else}
+            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+              {tempPassword}
+            </p>
+          {/if}
+          <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
+        </div>
+  
+        <!-- Bank Section -->
+        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+            ธนาคาร
+          </p>
+          {#if isEditing}
+            <input
+              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempPassword}
+              placeholder="Enter Password"
+            />
+            <input
+              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+              bind:value={tempPassword}
+              placeholder="Enter Password"
+            />
+          {:else}
+            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+              {tempPassword}
+            </p>
+            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+              {tempPassword}
+            </p>
+          {/if}
+          <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
+        </div>
+
+        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+            <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+              ที่อยู่
+            </p>
+            {#if isEditing}
+              <input
+                class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
+                       text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                       focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
+                bind:value={tempPassword}
+                placeholder="Enter Password"
+              />
+            {:else}
+              <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+                {tempPassword}
+              </p>
+            {/if}
+          </div>
+  
+        <!-- Logout Button -->
+        <div class="mt-10 flex justify-center" in:fly={{ y: 20, duration: 300, delay: 800 }}>
+          <button
+            class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-3 px-8 rounded-xl
+                   border border-white border-opacity-30 transition-all duration-300 hover:scale-105
+                   flex items-center space-x-2"
+            onclick={logout}
+          >
+            <span>ออกจากระบบ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Edit Button -->
+    {#if isEditing}
+      <button onclick={save} class="absolute bottom-12 right-12 border-none p-0">
+        <div class="w-12 h-12 flex items-center justify-center">
+          <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
+        </div>
+      </button>
+    {:else}
+      <button onclick={toggleEdit} class="absolute bottom-12 right-12 border-none p-0">
+        <div class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center">
+          <img src="/images/edit.svg" alt="Edit" class="w-8 h-8" />
+        </div>
+      </button>
+    {/if}
+  </div>
