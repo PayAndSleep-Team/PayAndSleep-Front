@@ -107,48 +107,60 @@
         <!-- Profile Info -->
         <div class="w-full flex flex-col items-center space-y-4" in:fly={{ y: 20, duration: 400, delay: 200 }}>
           {#if isEditing}
-            <input
-              class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-center placeholder-[#8B8B8C] font-jeju text-xl md:text-2xl font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempName}
-              placeholder="Enter Name"
-            />
+            <div class="w-full max-w-md relative mb-4">
+              <label for="name" class="text-[#F2F2F2] text-xl absolute -top-6 left-2">ชื่อ-นามสกุล</label>
+              <input
+                id="name"
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempName}
+                placeholder="กรอกชื่อ"
+              />
+            </div>
           {:else}
             <p class="text-[#F2F2F2] font-normal font-jeju text-3xl md:text-4xl text-center">
               {tempName}
             </p>
           {/if}
-  
+
           {#if isEditing}
-            <input
-              class="w-full max-w-md py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-center placeholder-[#8B8B8C] font-jeju text-xl font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempEmail}
-              placeholder="Enter Email"
-              type="email"
-            />
+            <div class="w-full max-w-md relative">
+              <label for="email" class="text-[#F2F2F2] text-xl absolute -top-6 left-2">อีเมล</label>
+              <input
+                id="email"
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempEmail}
+                placeholder="กรอกอีเมล"
+                type="email"
+              />
+            </div>
           {:else}
             <p class="text-[#F2F2F2] font-normal font-jeju text-xl md:text-2xl mb-6 text-center">
               {tempEmail}
             </p>
           {/if}
         </div>
-  
+
         <!-- Phone Section -->
         <div class="w-full max-w-2xl text-left mb-4 mt-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
           <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             เบอร์โทรศัพท์
           </p>
           {#if isEditing}
-            <input
-              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempPassword}
-              placeholder="Enter Password"
-            />
+            <div class="relative">
+              <input
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempPassword}
+                placeholder="กรอกเบอร์โทรศัพท์"
+                type="tel"
+                pattern="[0-9]{10}"
+              />
+            </div>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
@@ -156,20 +168,29 @@
           {/if}
           <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
         </div>
-  
+
         <!-- Password Section -->
         <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
           <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             รหัสผ่าน
           </p>
           {#if isEditing}
-            <input
-              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempPassword}
-              placeholder="Enter Password"
-            />
+            <div class="relative">
+              <input
+                id="password"
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempPassword}
+                placeholder="กรอกรหัสผ่าน"
+              />
+              <!-- svelte-ignore a11y_consider_explicit_label -->
+              <button 
+                type="button"
+                class="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#F2F2F2] opacity-70 hover:opacity-100"
+              >
+              </button>
+            </div>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
@@ -177,27 +198,37 @@
           {/if}
           <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
         </div>
-  
+
         <!-- Bank Section -->
         <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
           <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             ธนาคาร
           </p>
           {#if isEditing}
-            <input
-              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempPassword}
-              placeholder="Enter Password"
-            />
-            <input
-              class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
-                     focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-              bind:value={tempPassword}
-              placeholder="Enter Password"
-            />
+            <div class="space-y-2">
+              <select
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+              >
+                <option value="" disabled selected>เลือกธนาคาร</option>
+                <option value="kbank">กสิกรไทย</option>
+                <option value="scb">ไทยพาณิชย์</option>
+                <option value="bbl">กรุงเทพ</option>
+                <option value="ktb">กรุงไทย</option>
+                <option value="bay">กรุงศรีอยุธยา</option>
+                <option value="tmb">ทหารไทยธนชาต</option>
+              </select>
+              <input
+                class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempPassword}
+                placeholder="กรอกเลขบัญชี"
+                type="text"
+                pattern="[0-9-]*"
+              />
+            </div>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
@@ -210,23 +241,23 @@
         </div>
 
         <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
-            <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
-              ที่อยู่
+          <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
+            ที่อยู่
+          </p>
+          {#if isEditing}
+            <textarea
+              class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
+                               text-left placeholder-[#8B8B8C] placeholder-opacity-80  font-jeju text-lg md:text-xl font-normal
+                               focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300 min-h-[100px]"
+              bind:value={tempPassword}
+              placeholder="กรอกที่อยู่"
+            ></textarea>
+          {:else}
+            <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
+              {tempPassword}
             </p>
-            {#if isEditing}
-              <input
-                class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                       text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
-                       focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
-                bind:value={tempPassword}
-                placeholder="Enter Password"
-              />
-            {:else}
-              <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
-                {tempPassword}
-              </p>
-            {/if}
-          </div>
+          {/if}
+        </div>
   
         <!-- Logout Button -->
         <div class="flex justify-center" in:fly={{ y: 20, duration: 300, delay: 800 }}>
@@ -244,15 +275,23 @@
   
     <!-- Edit Button -->
     {#if isEditing}
-      <button onclick={save} class="absolute bottom-12 right-12 border-none p-0">
-        <div class="w-12 h-12 flex items-center justify-center">
+      <button 
+        onclick={save} 
+        class="fixed bottom-8 right-8 md:bottom-12 md:right-12 border-none p-0 transform transition-all duration-300 hover:scale-110"
+        in:fade={{ duration: 300, delay: 100 }}
+      >
+        <div class="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center">
           <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
         </div>
       </button>
     {:else}
-      <button onclick={toggleEdit} class="absolute bottom-12 right-12 border-none p-0">
+      <button 
+        onclick={toggleEdit} 
+        class="fixed bottom-8 right-8 md:bottom-12 md:right-12 border-none p-0 transform transition-all duration-300 hover:scale-110"
+        in:fade={{ duration: 300, delay: 100 }}
+      >
         <div class="w-12 h-12 bg-[url('/images/editbg.svg')] bg-cover flex items-center justify-center">
-          <img src="/images/edit.svg" alt="Edit" class="w-8 h-8" />
+          <img src="/images/edit.svg" alt="Edit" class="p-1 w-8 h-8" />
         </div>
       </button>
     {/if}
