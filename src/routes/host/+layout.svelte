@@ -41,7 +41,7 @@
 
   <!-- Sidebar -->
   <div
-    class="sidebar fixed md:relative bg-[#404040] text-white py-6 md:py-8 my-5 mx-2 md:mx-4 
+    class="sidebar fixed md:relative bg-[#404040] text-[#F2F2F2] py-6 md:py-8 my-5 mx-2 md:mx-4 
            flex flex-col rounded-2xl items-center justify-center
            {isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
            md:translate-x-0 transition-transform duration-300 ease-in-out
@@ -50,12 +50,12 @@
   >
     <nav class="space-y-1 md:space-y-2 w-full px-2">
       {#each [
-        { href: '/host/', text: 'หน้าหลัก' },
+        { href: '/host/dashboard', text: 'หน้าหลัก' },
         { href: '/host/userprofile', text: 'ข้อมูลส่วนตัว' },
         { href: '/host/notifications', text: 'การแจ้งเตือน' },
         { href: '/host/room', text: 'ห้องพัก' },
-        { href: '/host/submitrequest', text: 'จัดการส่งคำร้อง\nช่องบำรุง' },
-        { href: '/host/payment', text: 'จัดการสัญญา\nผู้เช่าใหม่' }
+        { href: '/host/managemaintenance', text: 'จัดการส่งคำร้อง\nช่องบำรุง' },
+        { href: '/host/confirm-contact', text: 'จัดการสัญญา\nผู้เช่าใหม่' }
       ] as item, i}
         <div class="flex flex-col items-center mb-2 md:mb-4" 
              in:fly={{ x: -20, duration: 300, delay: i * 100 }}>
@@ -67,7 +67,7 @@
           >
             {item.text}
           </a>
-          <hr class="border-white mx-2 md:mx-4 w-24 md:w-32 opacity-50" />
+          <hr class="border-[#F2F2F2] mx-2 md:mx-4 w-24 md:w-32 opacity-50" />
         </div>
       {/each}
     </nav>
