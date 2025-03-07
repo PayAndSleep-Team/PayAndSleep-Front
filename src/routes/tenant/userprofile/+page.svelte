@@ -275,7 +275,7 @@
 <!-- Edit Button -->
 {#if isEditing}
   <button
-    onclick={toggleEdit}
+    onclick={save}
     class="fixed bottom-8 right-8 md:bottom-12 md:right-12 border-none p-0 transform transition-all duration-300 hover:scale-110"
     in:fade={{ duration: 300, delay: 100 }}
   >
@@ -283,7 +283,6 @@
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="w-12 h-12 bg-[#404040] rounded-full flex items-center justify-center"
-      onclick={save}
     >
       <img src="/images/confirm.svg" alt="Confirm" class="w-8 h-8" />
     </div>
