@@ -1,6 +1,7 @@
 <script>
     import { onMount } from "svelte";
     import Chart from "chart.js/auto";
+    import { fade, fly, scale } from "svelte/transition";
 
     const Api_url = "http://localhost:3000";
 
@@ -122,19 +123,27 @@
             totalBalance = paid + unpaid;
         } catch (error) {
             console.error("Error fetching message:", error);
+            availableRooms = availableRooms || 0;
+            occupiedRooms = occupiedRooms || 0;
+            paid = paid || 0;
+            unpaid = unpaid || 0;
+            totalBalance = paid + unpaid;
         }
 
-        const dataDoughnut = {
-            labels: ["ชำระแล้ว", "ยังไม่ชำระ"],
-            datasets: [
-                {
-                    label: "ห้องพัก",
-                    data: [paid, unpaid],
-                    backgroundColor: ["rgb(85, 123, 85)", "rgb(208, 76, 76)"],
-                    hoverOffset: 4,
-                },
-            ],
-        };
+        if (paid !== undefined || unpaid !== undefined) {
+            totalBalance = totalBalance || 0;
+            
+            const dataDoughnut = {
+                labels: ["ชำระแล้ว", "ยังไม่ชำระ"],
+                datasets: [
+                    {
+                        label: "ห้องพัก",
+                        data: [paid || 0, unpaid || 0],
+                        backgroundColor: ["rgb(85, 123, 85)", "rgb(208, 76, 76)"],
+                        hoverOffset: 4,
+                    },
+                ],
+            };
 
         const innerText = {
             id: "innerText",
@@ -181,105 +190,125 @@
             plugins: [innerText],
         };
 
-        const ctx = document.getElementById("chartDoughnut").getContext("2d");
-        chartDoughnut = new Chart(ctx, configDoughnut);
+        // Destroy existing chart if it exists to prevent duplicates
+        if (chartDoughnut) {
+            chartDoughnut.destroy();
+        }
+
+        // Delay chart creation slightly to ensure container is ready
+        setTimeout(() => {
+            const ctx = document.getElementById("chartDoughnut");
+            if (ctx) {
+                chartDoughnut = new Chart(ctx.getContext("2d"), configDoughnut);
+            }
+        }, 100);
+        }
     });
 </script>
 
 <div class="w-full min-h-screen flex items-center justify-center p-4">
-    <div class="w-full">
-        <h2 class="text-2xl font-bold mb-6 text-left text-[#F2F2F2]">
-            จัดการห้องพัก
+    <div class="w-full max-w-7xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold mb-6 text-left text-[#F2F2F2]" in:fade={{ duration: 400, delay: 100 }}>
+            แดชบอร์ด
         </h2>
 
-        <div class="grid grid-cols-2 gap-6 mb-6">
-            <div class="bg-white rounded-xl shadow overflow-hidden p-4">
-                <div class="flex">
-                    <div><img src="/images/orgRect.svg" alt="" /></div>
-                    <div class="flex flex-col">
-                        <div class="px-3 text-xl text-[#D0854C]">
-                            ห้องที่ว่าง
-                        </div>
-                        <div class="px-3 text-4xl font-bold text-[#D0854C]">
-                            {availableRooms}
-                        </div>
-                        <div class="px-3 text-lg text-[#D0854C]">ห้อง</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-6">
+            <div class="bg-white rounded-2xl shadow overflow-hidden p-4 transform transition-all duration-300 hover:shadow-lg" 
+                 in:fly={{ y: 20, duration: 400, delay: 200 }}>
+                 <div class="flex items-center h-full">
+                    <div class="h-full w-[11px] ml-1 my-2 bg-[#D0854C]"></div>
+                    <div>
+                      <div class="px-3 text-lg sm:text-xl text-[#D0854C]">ห้องว่างให้เช่า</div>
+                      <div class="px-3 text-2xl sm:text-4xl font-bold text-[#D0854C]">
+                        {availableRooms}
+                      </div>
+                      <div class="px-3 text-base sm:text-lg text-[#D0854C]">บาท</div>
                     </div>
-                </div>
+                  </div>
             </div>
-            <div class="bg-white rounded-xl shadow overflow-hidden p-4">
-                <div class="flex">
-                    <div><img src="/images/blueRect.svg" alt="" /></div>
-                    <div class="flex flex-col">
-                        <div class="px-3 text-xl text-[#546882]">
-                            ห้องที่ว่าง
-                        </div>
-                        <div class="px-3 text-4xl font-bold text-[#546882]">
-                            {occupiedRooms}
-                        </div>
-                        <div class="px-3 text-lg text-[#546882]">ห้อง</div>
+            <div class="bg-white rounded-2xl shadow overflow-hidden p-4 transform transition-all duration-300 hover:shadow-lg"
+                 in:fly={{ y: 20, duration: 400, delay: 300 }}>
+                 <div class="flex items-center h-full">
+                    <div class="h-full w-[11px] ml-1 my-2 bg-[#546882]"></div>
+                    <div>
+                      <div class="px-3 text-lg sm:text-xl text-[#546882]">ห้องที่มีผู้เช่า</div>
+                      <div class="px-3 text-2xl sm:text-4xl font-bold text-[#546882]">
+                        {occupiedRooms}
+                      </div>
+                      <div class="px-3 text-base sm:text-lg text-[#546882]">ห้อง</div>
                     </div>
-                </div>
+                  </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
             <div
-                class="bg-white p-6 rounded-lg shadow-md relative flex justify-center items-center"
+                class="bg-white p-4 md:p-6 rounded-2xl shadow-md relative transform transition-all duration-300 hover:shadow-lg"
+                in:scale={{ duration: 400, delay: 400, start: 0.8 }}
             >
-                <div class="relative mx-auto">
-                    <canvas id="chartDoughnut" class="z-50"></canvas>
+                <div class="w-full h-full flex items-center justify-center py-2">
+                    <canvas id="chartDoughnut" width="250" height="250"></canvas>
                 </div>
             </div>
 
-            <div class="col-span-2 bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold mb-4">รายการผู้เช่าปัจจุบัน</h3>
-                <div class="h-72 overflow-y-auto">
-                    {#each currentTenants as tenant}
+            <div class="lg:col-span-2 bg-white p-4 md:p-6 rounded-2xl shadow-md transform transition-all duration-300 hover:shadow-lg"
+                 in:fly={{ x: 20, duration: 400, delay: 500 }}>
+                <h3 class="text-lg md:text-xl font-bold mb-4">รายการผู้เช่าปัจจุบัน</h3>
+                <div class="h-64 md:h-72 overflow-y-auto">
+                    {#each currentTenants as tenant, i}
                         <div
-                            class="flex justify-between items-center p-3 border-b"
+                            class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 border-b"
+                            in:fade={{ duration: 300, delay: 600 + i * 50 }}
                         >
-                            <div class="flex">
-                                <p class="text-lg font-bold">{tenant.room}</p>
-                                <p class="text-lg pl-2">- {tenant.name}</p>
+                            <div class="flex flex-col sm:flex-row sm:items-center mb-1 sm:mb-0">
+                                <p class="text-base md:text-lg font-bold">{tenant.room}</p>
+                                <p class="text-base md:text-lg sm:pl-2">- {tenant.name}</p>
                             </div>
-                            <p class="text-[#8B8B8C]">{tenant.time}</p>
+                            <p class="text-sm md:text-base text-[#8B8B8C]">{tenant.time}</p>
                         </div>
                     {/each}
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold mb-4 text-[#557B55]">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+            <div class="bg-white p-4 md:p-6 rounded-2xl shadow-md transform transition-all duration-300 hover:shadow-lg"
+                 in:fly={{ y: 20, duration: 400, delay: 700 }}>
+                <h3 class="text-lg md:text-xl font-bold mb-4 text-[#557B55]">
                     ยอดรายการชำระแล้ว
                 </h3>
-                <div class="h-64 overflow-y-auto">
-                    {#each paidBalances as balance}
+                <div class="h-56 md:h-64 overflow-y-auto">
+                    {#each paidBalances as balance, i}
                         <div
-                            class="flex justify-between p-3 border-b text-[#557B55]"
+                            class="flex flex-col sm:flex-row justify-between p-3 border-b text-[#557B55]"
+                            in:fade={{ duration: 300, delay: 800 + i * 50 }}
                         >
-                            <p class="font-bold">{balance.room}</p>
-                            <p>{balance.amount} บาท</p>
-                            <p>{balance.dueDate}</p>
+                            <p class="font-bold mb-1 sm:mb-0">{balance.room}</p>
+                            <div class="flex justify-between sm:justify-end w-full sm:w-auto">
+                                <p class="sm:mr-4">{balance.amount} บาท</p>
+                                <p>{balance.dueDate}</p>
+                            </div>
                         </div>
                     {/each}
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <h3 class="text-xl font-bold mb-4 text-[#D04C4C]">
+            <div class="bg-white p-4 md:p-6 rounded-2xl shadow-md transform transition-all duration-300 hover:shadow-lg"
+                 in:fly={{ y: 20, duration: 400, delay: 800 }}>
+                <h3 class="text-lg md:text-xl font-bold mb-4 text-[#D04C4C]">
                     ยอดรายการที่ยังไม่ชำระ
                 </h3>
-                <div class="h-64 overflow-y-auto">
-                    {#each unpaidBalances as balance}
+                <div class="h-56 md:h-64 overflow-y-auto">
+                    {#each unpaidBalances as balance, i}
                         <div
-                            class="flex justify-between p-3 border-b text-[#D04C4C]"
+                            class="flex flex-col sm:flex-row justify-between p-3 border-b text-[#D04C4C]"
+                            in:fade={{ duration: 300, delay: 900 + i * 50 }}
                         >
-                            <p class="font-bold">{balance.room}</p>
-                            <p>{balance.amount} บาท</p>
-                            <p>{balance.dueDate}</p>
+                            <p class="font-bold mb-1 sm:mb-0">{balance.room}</p>
+                            <div class="flex justify-between sm:justify-end w-full sm:w-auto">
+                                <p class="sm:mr-4">{balance.amount} บาท</p>
+                                <p>{balance.dueDate}</p>
+                            </div>
                         </div>
                     {/each}
                 </div>

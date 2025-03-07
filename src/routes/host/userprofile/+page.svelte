@@ -137,20 +137,20 @@
         </div>
   
         <!-- Phone Section -->
-        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
-          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+        <div class="w-full max-w-2xl text-left mb-4 mt-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             เบอร์โทรศัพท์
           </p>
           {#if isEditing}
             <input
               class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
                      focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
               bind:value={tempPassword}
               placeholder="Enter Password"
             />
           {:else}
-            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+            <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
             </p>
           {/if}
@@ -158,20 +158,20 @@
         </div>
   
         <!-- Password Section -->
-        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
-          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+        <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             รหัสผ่าน
           </p>
           {#if isEditing}
             <input
               class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
                      focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
               bind:value={tempPassword}
               placeholder="Enter Password"
             />
           {:else}
-            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+            <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
             </p>
           {/if}
@@ -179,59 +179,59 @@
         </div>
   
         <!-- Bank Section -->
-        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
-          <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+        <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+          <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
             ธนาคาร
           </p>
           {#if isEditing}
             <input
               class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
                      focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
               bind:value={tempPassword}
               placeholder="Enter Password"
             />
             <input
               class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                     text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                     text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
                      focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
               bind:value={tempPassword}
               placeholder="Enter Password"
             />
           {:else}
-            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+            <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
             </p>
-            <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+            <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
               {tempPassword}
             </p>
           {/if}
           <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
         </div>
 
-        <div class="w-full max-w-2xl text-left mb-10 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
-            <p class="text-[#F2F2F2] text-xl md:text-2xl font-normal leading-none mb-4">
+        <div class="w-full max-w-2xl text-left mb-4 relative px-4 md:px-0" in:fly={{ y: 20, duration: 400, delay: 300 }}>
+            <p class="text-[#F2F2F2] text-lg md:text-xl font-normal leading-none mb-4">
               ที่อยู่
             </p>
             {#if isEditing}
               <input
                 class="w-full py-1 px-6 rounded-2xl border-2 border-[#404040] bg-[#F2F2F2]
-                       text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
+                       text-left placeholder-[#8B8B8C] font-jeju text-md md:text-lg font-normal
                        focus:outline-none focus:ring-2 focus:ring-[#404040] transition-all duration-300"
                 bind:value={tempPassword}
                 placeholder="Enter Password"
               />
             {:else}
-              <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
+              <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
                 {tempPassword}
               </p>
             {/if}
           </div>
   
         <!-- Logout Button -->
-        <div class="mt-10 flex justify-center" in:fly={{ y: 20, duration: 300, delay: 800 }}>
+        <div class="flex justify-center" in:fly={{ y: 20, duration: 300, delay: 800 }}>
           <button
-            class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-3 px-8 rounded-xl
+            class="bg-white bg-opacity-10 hover:bg-opacity-20 text-white py-2 px-8 rounded-xl
                    border border-white border-opacity-30 transition-all duration-300 hover:scale-105
                    flex items-center space-x-2"
             onclick={logout}
