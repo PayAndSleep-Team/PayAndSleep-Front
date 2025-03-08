@@ -51,6 +51,18 @@
         }
     }
 
+    function changeType(type) {
+        if (type === "electric") {
+            return "ไฟฟ้า";
+        } else if (type === "water") {
+            return "น้ำประปา";
+        } else if (type === "equipment") {
+            return "อุปกรณ์";
+        } else if (type === "other") {
+            return "อื่นๆ";
+        }
+    }
+
     const updateStatus = async (id, status) => {
         try {
             const res = await fetch(`${Api_url}/api/status/maintenance-request`, {
@@ -109,7 +121,7 @@
                     >
                         <div>
                             <p class="text-2xl font-bold text-center">{req.room_number}</p>
-                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{req.type}</p>
+                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{changeType(req.type)}</p>
                             <p class="text-sm text-[#8B8B8C] my-3 mt-5 text-center line-clamp-2">{req.description}</p>
                         </div>
                         <button 
@@ -138,7 +150,7 @@
                     >
                         <div>
                             <p class="text-2xl font-bold text-center">{req.room_number}</p>
-                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{req.type}</p>
+                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{changeType(req.type)}</p>
                             <p class="text-sm text-[#8B8B8C] my-3 mt-5 text-center line-clamp-2">{req.description}</p>
                         </div>
                         <button 
@@ -167,7 +179,7 @@
                     >
                         <div>
                             <p class="text-2xl font-bold text-center">{req.room_number}</p>
-                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{req.type}</p>
+                            <p class="text-md border border-black px-4 py-1 rounded-xl mt-2 mx-auto text-center w-fit">{changeType(req.type)}</p>
                             <p class="text-sm text-[#8B8B8C] my-3 mt-5 text-center line-clamp-2">{req.description}</p>
                         </div>
                     </div>

@@ -171,7 +171,7 @@
                       <div class="px-3 text-2xl sm:text-4xl font-bold text-[#D0854C]">
                         {availableRooms}
                       </div>
-                      <div class="px-3 text-base sm:text-lg text-[#D0854C]">บาท</div>
+                      <div class="px-3 text-base sm:text-lg text-[#D0854C]">ห้อง</div>
                     </div>
                   </div>
             </div>
