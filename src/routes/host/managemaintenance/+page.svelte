@@ -13,7 +13,7 @@
             const data = await res.json();
             newRequests = data.filter(req => req.status === "pending");
             inProgressRequests = data.filter(req => req.status === "in_progress");
-            completedRequests = data.filter(req => req.status === "completed");
+            completedRequests = data.filter(req => req.status === "completed").slice(0, 3);
         } catch (error) {
             console.error("Error fetching message:", error);
         }

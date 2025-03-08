@@ -108,6 +108,22 @@
     <p class="font-bold text-4xl md:text-5xl text-white">{roomNumber}</p>
   </div>
 
+  {#if payment_id === 0}
+    <div class="flex justify-center items-center h-[300px]">
+      <p class="text-white
+        text-2xl md:text-3xl
+        font-semibold
+        text-center
+        w-full
+        max-w-md
+        px-4
+        md:px-6
+        lg:px-8
+      ">
+        ยังไม่มีรายการชำระเงิน
+      </p>
+    </div>
+  {:else}
   <div
     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
     in:fly={{ y: 20, duration: 400, delay: 200 }}
@@ -243,4 +259,5 @@
       </button>
     </div>
   </div>
+  {/if}
 </div>

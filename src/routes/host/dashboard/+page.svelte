@@ -40,7 +40,8 @@
                 return {
                     room: item.room_number,
                     name: item.tenant_name,
-                    time: item.created_at,
+                    // time: item.start_date.split(" ")[0],
+                    time: item.start_date,
                 };
             });
 

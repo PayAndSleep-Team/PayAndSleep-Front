@@ -165,7 +165,7 @@
               out:fly={{ y: -20, duration: 300 }}
             >
               <p class="text-xl sm:text-2xl font-bold text-center">
-                คำร้องซ่อมบำรุง {i + 1}
+                คำร้องซ่อมบำรุง
               </p>
               <div class="flex justify-center">
                 <p
