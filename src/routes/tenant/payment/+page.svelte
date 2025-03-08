@@ -1,17 +1,105 @@
 <script>
+  import { page } from "$app/stores";
+  import { onDestroy, onMount } from "svelte";
   import DragAndDrop from "$lib/components/DragAndDrop.svelte";
   import Dropdown from "$lib/components/Dropdown.svelte";
   import { fade, fly, scale } from "svelte/transition";
-  export let rent = 4500;
-  export let water = 1389;
-  export let electricity = 95;
-  export let lateFee = 20;
-  export let isOpen = true;
+  import { goto } from "$app/navigation";
+    import { base } from "$app/paths";
+
+  const Api_url = "http://localhost:3000";
+
+  let rent = 4500;
+  let water = 1389;
+  let electricity = 95;
+  let lateFee = 20;
+  let isOpen = true;
   let selectedFile = null;
   let paymentMethod = "เลือกวิธีชำระเงิน";
+  let total = 0;
 
-  const submit = () => {
-    console.log(selectedFile);
+  let bill_id = "";
+  let property = {};
+
+  onMount(async () => {
+    const unsubscribe = page.subscribe(($page) => {
+      bill_id = $page.url.searchParams.get("bill_id") || "";
+    });
+
+    onDestroy(unsubscribe);
+
+    try {
+      const res = await fetch(
+        `${Api_url}/api/get/bill-paymentmethod?bill_id=${bill_id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        },
+      );
+      const data = await res.json();
+      const bill = data.bill;
+      property = data.property;
+      rent = bill.rent_amount;
+      water = bill.water_fee;
+      electricity = bill.electricity_fee;
+      lateFee = bill.other_fees;
+      total = bill.total_amount;
+    } catch (error) {
+      console.error("Error fetching message:", error);
+      message = "Failed to load message";
+    }
+  });
+
+  let method = "";
+
+  const submitPayment = async () => {
+    try {
+      if (paymentMethod === "เลือกวิธีชำระเงิน") {
+        alert("กรุณาเลือกวิธีชำระเงิน");
+        return;
+      } else if (!selectedFile) {
+        alert("กรุณาอัพโหลดสลิปการโอนเงิน");
+        return;
+      }
+      if (paymentMethod === "พร้อมเพย์") {
+        method = "QR PromptPay";
+      } else if (paymentMethod === "บัญชีธนาคาร") {
+        method = "Bank Transfer";
+      }
+      const res = await fetch(`${Api_url}/api/create/payment`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bill_id,
+          amount: total,
+          payment_method: method,
+          proof_of_payment: selectedFile,
+        }),
+      });
+      const data = await res.json();
+      if (data.message === "สร้างการชำระเงินสำเร็จ") {
+        try {
+          const res = await fetch(`${Api_url}/api/pay/bill`, {
+            method: "PUT",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              bill_id,
+            }),
+          });
+          const data2 = await res.json();
+          if (data2.message === "ชำระเงินสำเร็จ") {
+            alert("ชำระเงินสำเร็จ");
+            goto("/tenant/paymentstatus");
+          }
+        } catch (error) {
+          console.error("Error fetching message:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching message:", error);
+    }
   };
 
   const closeModal = () => {
@@ -21,8 +109,6 @@
   $: if (paymentMethod === "พร้อมเพย์") {
     isOpen = true;
   }
-
-  $: total = rent + water + electricity + lateFee;
 </script>
 
 <div class="p-4 w-full" in:fade={{ duration: 300 }}>
@@ -30,7 +116,7 @@
     class="font-bold text-xl md:text-2xl text-white mb-2"
     in:fly={{ y: -20, duration: 600 }}
   >
-    ค่าใช้จ่ายรายเดือน
+    ค่าบริการรายเดือน
   </p>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
     <!-- Green card -->
@@ -110,9 +196,7 @@
       <div class="flex items-center h-full">
         <div class="h-full w-[11px] ml-1 my-2 bg-[#557B55]"></div>
         <div>
-          <div class="px-3 text-lg sm:text-xl text-[#557B55]">
-            รวมยอดชำระ
-          </div>
+          <div class="px-3 text-lg sm:text-xl text-[#557B55]">รวมยอดชำระ</div>
           <div class="px-3 text-2xl sm:text-4xl font-bold text-[#557B55]">
             {total}
           </div>
@@ -152,11 +236,11 @@
 
             <div class="text-center">
               <p class="text-lg md:text-xl">พร้อมเพย์</p>
-              <p class="text-lg md:text-xl mb-2">0958232112</p>
+              <p class="text-lg md:text-xl mb-2">{property.promptpay_number}</p>
             </div>
 
             <img
-              src="/images/qrcode.jpg"
+              src="https://promptpay.io/{property.promptpay_number}"
               alt="qrCode"
               class="w-full max-w-sm mx-auto"
             />
@@ -170,8 +254,8 @@
         class="flex items-center justify-center flex-col text-white text-lg md:text-xl mb-4"
         in:fade={{ duration: 300 }}
       >
-        <p>ธนาคารกสิกรไทย</p>
-        <p>0671624096 ภูฟ้า มันทรานนท์</p>
+        <p>{property.bank_name}</p>
+        <p>{property.bank_account_number} {property.account_holder_name}</p>
       </div>
     {/if}
 
@@ -184,7 +268,7 @@
     <div class="flex gap-4 mt-4">
       <button
         class="rounded-xl text-[#F2F2F2] bg-[#404040] py-2 px-6 md:px-8 transition-all duration-300 hover:scale-105"
-        onclick={submit}
+        onclick={submitPayment}
       >
         ยืนยัน
       </button>
