@@ -5,19 +5,16 @@
     const Api_url = "http://localhost:3000";
     let user = $state({});
     let profile = $state({});
-    let history = [
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-      { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    ];
+    let property = $state({});
   
     let isEditing = $state(false);
     let tempName = $state("ปทิตตา ดวงแก้ว");
     let tempEmail = $state("patittadua@gmail.com");
     let tempPassword = $state("Pramandanijjanukor2546");
+    let tempPhone = $state("0812345678");
+    let tempBank = $state("กรุงเทพ");
+    let tempAccount = $state("123-4-56789-0");
+    let tempAddress = $state("123 หมู่ 4 ต.หนองหาร อ.เมือง จ.เชียงใหม่ 50000");
   
     onMount(async () => {
       try {
@@ -27,9 +24,14 @@
         });
         user = await res.json();
         profile = user.profile;
+        property = user.property;
         tempName = profile?.name;
         tempEmail = user?.email || "Enter Email";
         tempPassword = user?.password || "Enter Password";
+        tempPhone = profile?.phone || "Enter Phone";
+        tempBank = property?.bank_name || "Enter Bank";
+        tempAccount = property?.bank_account_number || "Enter Account";
+        tempAddress = property?.address || "Enter Address";
       } catch (error) {
         console.error("Error fetching message:", error);
       }
@@ -40,13 +42,23 @@
         tempName = profile?.name;
         tempEmail = user?.email;
         tempPassword = user?.password;
+        tempPhone = profile?.phone;
+        tempBank = property?.bank_name;
+        tempAccount = property?.bank_account_number;
+        tempAddress = property?.address;
       } else {
         if (profile) {
           profile.name = tempName;
+          profile.phone = tempPhone;
         }
         if (user) {
           user.email = tempEmail;
           user.password = tempPassword;
+        }
+        if (property) {
+          property.bank_name = tempBank;
+          property.bank_account_number = tempAccount;
+          property.address = tempAddress;
         }
       }
       isEditing = !isEditing;
@@ -63,11 +75,25 @@
           body: JSON.stringify({
             name: tempName,
             email: tempEmail,
+            phone: tempPhone,
             password: tempPassword,
           }),
         });
         const data = await res.json();
-        if (data.message === "อัพเดทโปรไฟล์สำเร็จ") {
+        const res2 = await fetch(`${Api_url}/api/update/property`, {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bank_name: tempBank,
+            bank_account_number: tempAccount,
+            address: tempAddress,
+          }),
+        });
+        const data2 = await res2.json();
+        if (data.message === "อัพเดทโปรไฟล์สำเร็จ" && data2.message === "อัพเดท Property สำเร็จ") {
           toggleEdit();
         }
       } catch (error) {
@@ -155,7 +181,7 @@
                 class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
-                bind:value={tempPassword}
+                bind:value={tempPhone}
                 placeholder="กรอกเบอร์โทรศัพท์"
                 type="tel"
                 pattern="[0-9]{10}"
@@ -163,7 +189,7 @@
             </div>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
-              {tempPassword}
+              {tempPhone}
             </p>
           {/if}
           <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
@@ -210,20 +236,21 @@
                 class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
+                bind:value={tempBank}
               >
-                <option value="" disabled selected>เลือกธนาคาร</option>
-                <option value="kbank">กสิกรไทย</option>
-                <option value="scb">ไทยพาณิชย์</option>
-                <option value="bbl">กรุงเทพ</option>
-                <option value="ktb">กรุงไทย</option>
-                <option value="bay">กรุงศรีอยุธยา</option>
-                <option value="tmb">ทหารไทยธนชาต</option>
+              <option value="" disabled selected>เลือกธนาคาร</option>
+              <option value="ธนาคารกรุงเทพ">ธนาคารกรุงเทพ</option>
+              <option value="ธนาคารกสิกรไทย">ธนาคารกสิกรไทย</option>
+              <option value="ธนาคารไทยพาณิชย์">ธนาคารไทยพาณิชย์</option>
+              <option value="ธนาคารกรุงไทย">ธนาคารกรุงไทย</option>
+              <option value="ธนาคารทหารไทย">ธนาคารทหารไทย</option>
+              <option value="ธนาคารยูโอบี">ธนาคารยูโอบี</option>
               </select>
               <input
                 class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-left placeholder-[#8B8B8C] placeholder-opacity-80 font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
-                bind:value={tempPassword}
+                bind:value={tempAccount}
                 placeholder="กรอกเลขบัญชี"
                 type="text"
                 pattern="[0-9-]*"
@@ -231,10 +258,10 @@
             </div>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
-              {tempPassword}
+              {tempBank}
             </p>
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
-              {tempPassword}
+              {tempAccount}
             </p>
           {/if}
           <div class="absolute bottom-0 left-0 w-full border-t-2 border-white border-opacity-20"></div>
@@ -249,12 +276,12 @@
               class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-left placeholder-[#8B8B8C] placeholder-opacity-80  font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300 min-h-[100px]"
-              bind:value={tempPassword}
+              bind:value={tempAddress}
               placeholder="กรอกที่อยู่"
             ></textarea>
           {:else}
             <p class="text-[#F2F2F2] text-md md:text-lg mb-4 pl-10">
-              {tempPassword}
+              {tempAddress}
             </p>
           {/if}
         </div>

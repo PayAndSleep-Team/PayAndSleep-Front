@@ -3,43 +3,7 @@
   import { onMount } from "svelte";
   import { fade, fly, scale } from "svelte/transition";
 
-  let rooms = [
-    {
-      id: 1,
-      room_number: "209-01",
-      status: "available",
-      size: "30",
-      price: "5000",
-    },
-    {
-      id: 2,
-      room_number: "209-02",
-      status: "occupied",
-      size: "25",
-      price: "4500",
-    },
-    {
-      id: 3,
-      room_number: "209-01",
-      status: "available",
-      size: "30",
-      price: "5000",
-    },
-    {
-      id: 4,
-      room_number: "209-02",
-      status: "occupied",
-      size: "25",
-      price: "4500",
-    },
-    {
-      id: 5,
-      room_number: "209-01",
-      status: "available",
-      size: "30",
-      price: "5000",
-    },
-  ];
+  let rooms = [];
 
   let errorMessage = "";
   let newRoom = {
@@ -104,32 +68,34 @@
     }
   };
 
-  function submitNewRoom() {
+  async function submitNewRoom() {
     if (!newRoom.room_number || !newRoom.size || !newRoom.price) {
       errorMessage = "กรุณากรอกข้อมูลให้ครบถ้วน";
       return;
     }
     isSubmitting = true;
-    
+
     try {
-      const newRoomWithId = {
-        id: rooms.length + 1,
-        room_number: newRoom.room_number,
-        size: newRoom.size,
-        price: newRoom.price,
-        status: newRoom.status
-      };
-    
-      rooms = [...rooms, newRoomWithId];
-      
-      isRoomModalOpen = false;
-      newRoom = {
-        room_number: "",
-        size: "",
-        price: "",
-        status: "available"
-      };
-      showSuccessToast("เพิ่มห้องพักสำเร็จ");
+      const res = await fetch(`${Api_url}/api/create/room`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRoom),
+      });
+      const data = await res.json();
+      if (data.message === "สร้าง Room สำเร็จ") {
+        rooms = [...rooms, newRoom];
+        isRoomModalOpen = false;
+        newRoom = {
+          room_number: "",
+          size: "",
+          price: "",
+          status: "available",
+        };
+        showSuccessToast("เพิ่มห้องพักสำเร็จ");
+      }
     } catch (error) {
       console.error("Error creating room:", error);
       errorMessage = "ไม่สามารถเพิ่มห้องพัก";
@@ -147,23 +113,21 @@
 
     setTimeout(() => {
       toast.classList.add("translate-y-20", "opacity-0");
-      setTimeout(() => {
-        document.body.removeChild(toast);
-      }, 300);
+      window.location.reload();
     }, 3000);
   }
 
   function gotoRentfee() {
-    goto(`/host/rentfee?id=${selectedRoom.id || selectedRoom.room_number}`);
+    goto(`/host/rentfee?id=${selectedRoom.id}`);
   }
 
   function gotoManagerooms() {
-    goto(`/host/managerooms?id=${selectedRoom.id || selectedRoom.room_number}`);
+    goto(`/host/managerooms?id=${selectedRoom.id}`);
   }
 
   function gotoVerifyPayment() {
     goto(
-      `/host/verify-payment?id=${selectedRoom.id || selectedRoom.room_number}`
+      `/host/verify-payment?id=${selectedRoom.id}`,
     );
   }
 </script>
@@ -188,9 +152,7 @@
 
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4"
-  >
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
     <!-- create room -->
     <div
       class="bg-white rounded-xl shadow overflow-hidden p-2 transform transition-all duration-300 hover:scale-105 h-20 sm:h-24"
@@ -205,7 +167,7 @@
       </div>
     </div>
 
-    {#each rooms as room, i (room.id || i)}
+    {#each rooms as room, i (i)}
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
@@ -270,28 +232,32 @@
             </p>
           </div>
         </button>
-        <button
-          onclick={gotoVerifyPayment}
-          class="transform transition-transform duration-200 hover:scale-105"
-        >
-          <div
-            class="bg-[#404040] rounded-xl p-6 w-64 md:w-80 h-24 flex justify-center items-center cursor-pointer shadow-lg"
+        {#if selectedRoom.status === "occupied"}
+          <button
+            onclick={gotoVerifyPayment}
+            class="transform transition-transform duration-200 hover:scale-105"
           >
-            <p class="text-white text-2xl font-bold text-center">
-              ตรวจสอบ<br />รายการชำระเงิน
-            </p>
-          </div>
-        </button>
-        <button
-          onclick={gotoRentfee}
-          class="transform transition-transform duration-200 hover:scale-105"
-        >
-          <div
-            class="bg-[#404040] rounded-xl p-6 w-64 md:w-80 h-24 flex justify-center items-center cursor-pointer shadow-lg"
+            <div
+              class="bg-[#404040] rounded-xl p-6 w-64 md:w-80 h-24 flex justify-center items-center cursor-pointer shadow-lg"
+            >
+              <p class="text-white text-2xl font-bold text-center">
+                ตรวจสอบ<br />รายการชำระเงิน
+              </p>
+            </div>
+          </button>
+          <button
+            onclick={gotoRentfee}
+            class="transform transition-transform duration-200 hover:scale-105"
           >
-            <p class="text-white text-2xl font-bold text-center">แจ้งค่าเช่า</p>
-          </div>
-        </button>
+            <div
+              class="bg-[#404040] rounded-xl p-6 w-64 md:w-80 h-24 flex justify-center items-center cursor-pointer shadow-lg"
+            >
+              <p class="text-white text-2xl font-bold text-center">
+                แจ้งค่าเช่า
+              </p>
+            </div>
+          </button>
+        {/if}
       </div>
     </div>
   {/if}
@@ -313,7 +279,13 @@
           เพิ่มห้องพัก
         </h2>
 
-        <form onsubmit={(e) => { e.preventDefault(); submitNewRoom(); }} class="space-y-4">
+        <form
+          onsubmit={(e) => {
+            e.preventDefault();
+            submitNewRoom();
+          }}
+          class="space-y-4"
+        >
           <div>
             <label
               for="room_number"

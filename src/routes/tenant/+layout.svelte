@@ -20,8 +20,12 @@
           credentials: "include",
         });
         user = await res.json();
+        let rental = user.rental;
         if (user.role !== "tenant") {
           goto("/landing/login");
+        }
+        if (rental === null || rental.status === "waiting") {
+          goto("/landing/waiting");
         }
       } catch (error) {
         console.error("Error fetching message:", error);
@@ -54,7 +58,7 @@
           { href: '/tenant/userprofile', text: 'ข้อมูลส่วนตัว' },
           { href: '/tenant/notifications', text: 'การแจ้งเตือน' },
           { href: '/tenant/submitrequest', text: 'ส่งคำร้อง\nช่องบำรุง' },
-          { href: '/tenant/payment', text: 'ชำระเงิน' }
+          { href: '/tenant/paymentstatus', text: 'ค่าบริการ' }
         ] as item, i}
           <div class="flex flex-col items-center mb-2 md:mb-4" 
                in:fly={{ x: -20, duration: 300, delay: i * 100 }}>

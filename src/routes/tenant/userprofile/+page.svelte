@@ -5,19 +5,13 @@
   const Api_url = "http://localhost:3000";
   let user = $state({});
   let profile = $state({});
-  let history = [
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-    { month: "มกราคม 2567", amount: "8,324 บาท", status: "ชำระแล้ว" },
-  ];
+  let history = $state([]);
 
   let isEditing = $state(false);
-  let tempName = $state("ปทิตตา ดวงแก้ว");
-  let tempEmail = $state("patittadua@gmail.com");
-  let tempPassword = $state("Pramandanijjanukor2546");
+  let tempName = $state("");
+  let tempEmail = $state("");
+  let tempPassword = $state("");
+  let tempPhone = $state("");
 
   onMount(async () => {
     try {
@@ -30,6 +24,18 @@
       tempName = profile?.name;
       tempEmail = user?.email || "Enter Email";
       tempPassword = user?.password || "Enter Password";
+      tempPhone = profile?.phone || "Enter Phone";
+    } catch (error) {
+      console.error("Error fetching message:", error);
+    }
+    try {
+      const res = await fetch(`${Api_url}/api/get/bills`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      data.length = 6;
+      history = data;
     } catch (error) {
       console.error("Error fetching message:", error);
     }
@@ -40,9 +46,11 @@
       tempName = profile?.name;
       tempEmail = user?.email;
       tempPassword = user?.password;
+      tempPhone = profile?.phone;
     } else {
       if (profile) {
         profile.name = tempName;
+        profile.phone = tempPhone;
       }
       if (user) {
         user.email = tempEmail;
@@ -64,6 +72,7 @@
           name: tempName,
           email: tempEmail,
           password: tempPassword,
+          phone: tempPhone,
         }),
       });
       const data = await res.json();
@@ -88,6 +97,16 @@
       }
     } catch (error) {
       console.error("Error fetching message:", error);
+    }
+  }
+
+  function changeStatus(mes) {
+    if (mes === "pending") {
+      return "ยังไม่ชำระ";
+    } else if (mes === "paid") {
+      return "ชำระแล้ว";
+    } else if (mes === "overdue") {
+      return "เกินกำหนด";
     }
   }
 </script>
@@ -116,7 +135,7 @@
             <label for="name" class="text-[#F2F2F2] text-xl absolute -top-6 left-2">ชื่อ-นามสกุล</label>
             <input
               id="name"
-              class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#F2F2F2]
+              class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-center placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
               bind:value={tempName}
@@ -136,7 +155,7 @@
             <label for="email" class="text-[#F2F2F2] text-xl absolute -top-6 left-2">อีเมล</label>
             <input
               id="email"
-              class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#F2F2F2]
+              class="w-full py-1 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                                text-center placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
               bind:value={tempEmail}
@@ -166,7 +185,7 @@
         {#if isEditing}
           <div class="relative">
             <input
-              class="w-full py-2 px-6 border-2 border-[#404040] text-[#F2F2F2]
+              class="w-full py-2 px-6 border-2 border-[#404040] text-[#8B8B8C]
                                text-left placeholder-[#8B8B8C] rounded-xl font-jeju text-lg md:text-xl font-normal
                                focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
               bind:value={tempPassword}
@@ -200,17 +219,17 @@
         </p>
         {#if isEditing}
           <input
-            class="w-full py-2 px-6 rounded-xl border-2 border-[#404040] text-[#F2F2F2]
+            class="w-full py-2 px-6 rounded-xl border-2 border-[#404040] text-[#8B8B8C]
                              text-left placeholder-[#8B8B8C] font-jeju text-lg md:text-xl font-normal
                              focus:outline-none focus:ring-2 focus:ring-[#546882] transition-all duration-300"
-            bind:value={tempPassword}
+            bind:value={tempPhone}
             placeholder="กรอกเบอร์โทรศัพท์"
             type="tel"
             pattern="[0-9]{10}"
           />
         {:else}
           <p class="text-[#F2F2F2] text-lg md:text-xl mb-4 pl-10">
-            {tempPassword}
+            {tempPhone}
           </p>
         {/if}
         <div
@@ -239,14 +258,14 @@
                 <div class="flex flex-col justify-center flex-1 ml-3">
                   <div class="flex flex-row">
                     <div class="text-base md:text-xl text-[#F2F2F2]">
-                      {item.month}
+                      {item.month_year}
                     </div>
                     <div class="text-base md:text-xl text-[#F2F2F2]">
-                      &nbsp;&nbsp;ยอดรวม {item.amount}
+                      &nbsp;&nbsp;ยอดรวม {item.total_amount} บาท
                     </div>
                   </div>
                   <div class="text-base md:text-xl text-[#F2F2F2]">
-                    สถานะ: {item.status}
+                    สถานะ: {changeStatus(item.status)}
                   </div>
                 </div>
               </div>

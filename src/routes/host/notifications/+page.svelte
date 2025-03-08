@@ -1,6 +1,6 @@
 <script>
-    import { onMount } from 'svelte';
-    import { fade, fly, slide } from 'svelte/transition';
+    import { onMount } from "svelte";
+    import { fade, fly, slide } from "svelte/transition";
 
     /** @type {{ data: import('./$types').PageData }} */
     let { data } = $props();
@@ -14,7 +14,7 @@
             const res = await fetch(`${Api_url}/api/read/notification`, {
                 method: "PUT",
                 credentials: "include",
-                headers: { 'Content-Type': 'application/json' },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),
             });
             const data = await res.json();
@@ -40,55 +40,75 @@
             notifications = await res.json();
         } catch (error) {
             console.error("Error fetching message:", error);
-            notifications = [{ message: "Failed to load notifications"}];
+            notifications = [{ message: "Failed to load notifications" }];
         }
     });
 </script>
 
 <div class="min-h-screen" in:fade={{ duration: 300 }}>
-    <div class="flex items-center px-4 sm:px-8 md:px-12 py-6 md:py-8" 
-         in:fly={{ y: -20, duration: 600 }}>
-         <h2 class="text-lg md:text-2xl font-bold pb-2 flex items-center text-[#F2F2F2]" in:fade={{ duration: 300 }}>
+    <div
+        class="flex items-center px-4 sm:px-8 md:px-12 py-6 md:py-8"
+        in:fly={{ y: -20, duration: 600 }}
+    >
+        <h2
+            class="text-lg md:text-2xl font-bold pb-2 flex items-center text-[#F2F2F2]"
+            in:fade={{ duration: 300 }}
+        >
             <div class="h-14 w-2 bg-[#F2F2F2] mr-2 ]"></div>
             การแจ้งเตือน
         </h2>
     </div>
     <div class="flex flex-col gap-4 md:gap-6 px-4 sm:px-8 md:px-12 lg:px-20">
-        {#each notifications as notification, i}
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <div 
-                in:fly={{ y: 20, duration: 500, delay: i * 100 }}
-                class="flex items-center bg-[#F2F2F2] rounded-lg shadow-md p-4 
+        {#if notifications.length > 0}
+            {#each notifications as notification, i}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_static_element_interactions -->
+                <div
+                    in:fly={{ y: 20, duration: 500, delay: i * 100 }}
+                    class="flex items-center bg-[#F2F2F2] rounded-lg shadow-md p-4
                        transform transition-all duration-300 hover:scale-[1.02] hover:shadow-lg
                        cursor-pointer"
-                onclick={() => markAsRead(notification.id)}
-            >
-                {#if notification.status === "read"}
-                    <img src="/images/bell.svg" alt="bell" 
-                         class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"/>
-                {:else if notification.message === "คำร้องซ่อมบำรุง"}
-                    <img src="/images/greenBell.svg" alt="bell"
-                         class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"/>
-                    <span class="absolute top-0 right-0 h-3 w-3 bg-green-500 rounded-full"></span>
-                {:else}
-                    <div class="relative">
-                        <img src="/images/redBell.svg" alt="bell" 
-                             class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"/>
-                        <span class="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"></span>
-                    </div>
-                {/if}
-                <p class="text-base md:text-lg text-[#404040] flex-1">
-                    {notification.message}
-                </p>
-            </div>
+                    onclick={() => markAsRead(notification.id)}
+                >
+                    {#if notification.status === "read"}
+                        <img
+                            src="/images/bell.svg"
+                            alt="bell"
+                            class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"
+                        />
+                    {:else if notification.message === "คำร้องซ่อมบำรุง"}
+                        <img
+                            src="/images/greenBell.svg"
+                            alt="bell"
+                            class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"
+                        />
+                        <span
+                            class="absolute top-0 right-0 h-3 w-3 bg-green-500 rounded-full"
+                        ></span>
+                    {:else}
+                        <div class="relative">
+                            <img
+                                src="/images/redBell.svg"
+                                alt="bell"
+                                class="w-8 h-8 md:w-10 md:h-10 mr-3 md:mr-4 transition-transform hover:rotate-12"
+                            />
+                            <span
+                                class="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full"
+                            ></span>
+                        </div>
+                    {/if}
+                    <p class="text-base md:text-lg text-[#404040] flex-1">
+                        {notification.message}
+                    </p>
+                </div>
+            {/each}
         {:else}
-            <div 
+            <div
                 class="text-center text-[#F2F2F2] text-lg md:text-xl p-8"
                 in:fade
             >
                 ไม่มีการแจ้งเตือน
             </div>
-        {/each}
+        {/if}
     </div>
 </div>

@@ -10,60 +10,10 @@
     let paid = 0;
     let unpaid = 0;
     let totalBalance;
-    let currentTenants = [
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 10",
-            name: "ห้องว่างรอการโอน",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-        {
-            room: "406 - 21",
-            name: "นายสมชาย ขาวสะอาด",
-            time: "12/09/67 09:28 น.",
-        },
-    ];
+    let currentTenants = [];
 
-    let unpaidBalances = [
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 29", amount: 4678, dueDate: "10/09/67 17:51 น." },
-    ];
-    let paidBalances = [
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-        { room: "406 - 12", amount: 4678, dueDate: "10/09/67 17:51 น." },
-    ];
+    let unpaidBalances = [];
+    let paidBalances = [];
     let chartDoughnut;
 
     onMount(async () => {
@@ -99,7 +49,6 @@
                 credentials: "include",
             });
             const data3 = await res3.json();
-            console.log(data3);
             unpaidBalances = data3
                 .filter((item) => item.status === "pending")
                 .map((item) => {

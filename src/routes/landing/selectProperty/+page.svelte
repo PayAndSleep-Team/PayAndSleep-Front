@@ -93,7 +93,7 @@
       
       if (data.message === "สร้างสัญญาเช่าสำเร็จ") {
         showSuccessMessage();
-        setTimeout(() => goto("/tenant/waiting"), 1500);
+        setTimeout(() => goto("/landing/waiting"), 1500);
       } else {
         errorMessage = data.message;
       }
